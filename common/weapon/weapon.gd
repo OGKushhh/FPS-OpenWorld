@@ -179,7 +179,7 @@ var was_firing: bool = false              # Track firing state for recovery trig
 var current_bloom: float = 0.0     # Accumulated spray bloom (decays ONLY when not firing)
 var is_firing: bool = false        # Tracks if player is actively firing
 var is_player_crouching: bool = false
-var is_player_sprinting: bool = false
+var is_player_sprinting: bool = false  # Blocks fire while sprinting (tactical shooter rule)
 var player_horizontal_velocity: float = 0.0
 var player_airborne: bool = false
 
@@ -324,6 +324,11 @@ func try_fire(is_initial_press: bool = false) -> bool:
 		if not can_fire or is_reloading:
 				return false
 
+		# Tactical shooter rule: sprinting breaks aim — can't fire while sprinting.
+		# Releasing sprint immediately allows firing (no delay), same as Valorant.
+		if is_player_sprinting:
+				return false
+
 		if not is_melee_weapon:
 				if reload_required and current_mag < consume:
 						start_reload()
@@ -371,10 +376,17 @@ func fire_weapon() -> void:
 				# Mark as firing — bloom will NOT decay while this is true
 				is_firing = true
 
-				# Recoil pattern values are in DEGREES but rotation
-				# accumulators use RADIANS. Convert before applying.
-				recoil_pitch = deg_to_rad(_get_recoil_pitch())
-				recoil_yaw = deg_to_rad(_get_recoil_yaw())
+				# Cache raw degree values ONCE so the accumulator and the
+				# camera application use identical numbers. Calling
+				# _get_recoil_yaw() twice was returning two different
+				# randf_range() results — camera moved by one value but
+				# recovery tried to undo a different one.
+				var raw_pitch_deg: float = _get_recoil_pitch()
+				var raw_yaw_deg: float = _get_recoil_yaw()
+
+				# Convert to radians for camera, then apply multipliers
+				recoil_pitch = deg_to_rad(raw_pitch_deg)
+				recoil_yaw = deg_to_rad(raw_yaw_deg)
 
 				if is_aimed:
 						recoil_pitch *= ads_recoil_multiplier
@@ -383,9 +395,10 @@ func fire_weapon() -> void:
 						recoil_pitch *= recoil_crouch_multiplier
 						recoil_yaw *= recoil_crouch_multiplier
 
-				# Track in degrees for crosshair snap pixel math
-				recoil_accumulated_pitch += _get_recoil_pitch()
-				recoil_accumulated_yaw += _get_recoil_yaw()
+				# Track the same multiplied magnitude (converted back to degrees)
+				# so recovery undoes exactly what was applied — no overshoot.
+				recoil_accumulated_pitch += rad_to_deg(recoil_pitch)
+				recoil_accumulated_yaw += rad_to_deg(recoil_yaw)
 
 				# Apply in radians to rotation accumulators
 				_apply_recoil_to_camera(recoil_pitch, recoil_yaw)
@@ -487,6 +500,13 @@ func _on_cooldown_timer_timeout() -> void:
 		can_fire = true
 
 		if not Input.is_action_pressed("fire"):
+				# Authoritative fire-release path. The velocity signal in
+				# _on_player_velocity_changed() only fires when the player
+				# moves — if they stand still and release the trigger,
+				# that signal never re-fires and is_firing stays true,
+				# blocking bloom decay forever. Clearing it here covers
+				# that case: every cooldown tick we check input directly.
+				is_firing = false
 				_begin_recoil_recovery()
 
 
@@ -653,8 +673,13 @@ func _calculate_spread_direction(spread_degrees: float) -> Vector3:
 		var forward = -camera.global_transform.basis.z  # -Z is forward in Godot
 		var spread_rad = deg_to_rad(spread_degrees)
 
-		# Random point on a disk of radius tan(spread_rad)
-		var rand_radius = randf_range(0.0, tan(spread_rad))
+		# Random point on a disk of radius tan(spread_rad).
+		# sqrt(randf()) corrects for disk area: without it, randf_range(0, r)
+		# produces more samples near the center because small radii cover
+		# proportionally less area. sqrt maps the linear sample onto the
+		# correct area-weighted distribution — shots spread evenly across
+		# the full cone instead of clustering at the crosshair.
+		var rand_radius = tan(spread_rad) * sqrt(randf())
 		var rand_angle = randf_range(0.0, 2.0 * PI)
 
 		var right = camera.global_transform.basis.x

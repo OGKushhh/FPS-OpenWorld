@@ -1,296 +1,407 @@
 extends Node3D
 
 # ══════════════════════════════════════════════════════════════════
-# SHOOTING_RANGE.GD — Range Builder + Target Manager + Score HUD
+# SHOOTING_RANGE.GD — Gunplay Test Range
 #
-# Builds the entire shooting range in _ready():
-#   - Varied terrain materials (concrete, sand, metal, wood, rubber)
-#   - Multiple lanes at 15m, 30m, 50m+ distances
-#   - Backstop walls, lane dividers, cover objects
-#   - Moving targets with different patterns
-#   - Score tracking, round management, on-screen HUD
+# Five distinct stations, each testing a specific mechanic:
+#
+#   STATION 1 — RECOIL WALL (Z -8)
+#     One static target 8m away. Spray into it and watch your
+#     recoil pattern imprint on it visually. Teaches the rifle
+#     pattern before distance makes it hard.
+#
+#   STATION 2 — FIRST SHOT ACCURACY (Z -20)
+#     Popup targets. They appear for 0.8s — not enough time to
+#     spray. Forces you to stop moving, wait for crosshair to
+#     settle, then land a single clean shot. Rewards patience.
+#
+#   STATION 3 — TRACKING (Z -35)
+#     Targets slide horizontally at varying speeds. Tests whether
+#     you can maintain aim on a moving target while controlling
+#     recoil. Headshots on moving targets.
+#
+#   STATION 4 — COUNTER-STRAFE (Z -35, side corridor)
+#     You must move left, stop, shoot, move right, stop, shoot.
+#     A wide target only visible from specific positions forces
+#     lateral movement between shots. Tests movement accuracy.
+#
+#   STATION 5 — PRESSURE (Z -50)
+#     Charge targets rush you from 50m. Multiple incoming.
+#     Tests: can you headshot under pressure? Do you panic-spray?
+#
+# Controls:
+#   TAB   — cycle stations
+#   R     — reset current station score
+#   F1    — toggle hit feedback overlay
 # ══════════════════════════════════════════════════════════════════
 
 
-# ── Round Modes ──────────────────────────────────────────────────
-enum Mode { FREE_PLAY, TIMED, PRECISION, SURVIVAL }
+# ── Station definitions ──────────────────────────────────────────
+enum Station {
+	RECOIL_WALL,
+	FIRST_SHOT,
+	TRACKING,
+	COUNTER_STRAFE,
+	PRESSURE
+}
 
-@export_group("range settings")
-@export var range_mode: Mode = Mode.FREE_PLAY
-@export var timed_round_seconds: float = 60.0
-@export var max_targets_alive: int = 8
+const STATION_NAMES: Dictionary = {
+	Station.RECOIL_WALL:     "STATION 1 — RECOIL WALL",
+	Station.FIRST_SHOT:      "STATION 2 — FIRST SHOT",
+	Station.TRACKING:        "STATION 3 — TRACKING",
+	Station.COUNTER_STRAFE:  "STATION 4 — COUNTER-STRAFE",
+	Station.PRESSURE:        "STATION 5 — PRESSURE",
+}
 
-# ── Score State ──────────────────────────────────────────────────
-var total_score: int = 0
-var shots_fired: int = 0
-var shots_hit: int = 0
-var headshots: int = 0
-var round_time_remaining: float = 0.0
-var round_active: bool = false
-var targets: Array[Node3D] = []
+const STATION_TIPS: Dictionary = {
+	Station.RECOIL_WALL:     "Spray full mag. Watch the pattern. Learn to pull down-left to control it.",
+	Station.FIRST_SHOT:      "Targets show for 0.8s. Stop moving first. One clean shot per target.",
+	Station.TRACKING:        "Keep crosshair on the moving target. Aim for the yellow head.",
+	Station.COUNTER_STRAFE:  "Move left → STOP → shoot. Move right → STOP → shoot. Repeat.",
+	Station.PRESSURE:        "They're charging. Headshots. Don't spray. Stay calm.",
+}
 
-# ── HUD References ───────────────────────────────────────────────
-var hud_label: Label
-var score_label: Label
-var round_label: Label
+# Player spawn positions per station
+const STATION_SPAWNS: Dictionary = {
+	Station.RECOIL_WALL:     Vector3(0, 1.0, 2),
+	Station.FIRST_SHOT:      Vector3(0, 1.0, 2),
+	Station.TRACKING:        Vector3(0, 1.0, 2),
+	Station.COUNTER_STRAFE:  Vector3(0, 1.0, 2),
+	Station.PRESSURE:        Vector3(0, 1.0, 2),
+}
 
-# ── Terrain Colors ───────────────────────────────────────────────
+var current_station: Station = Station.RECOIL_WALL
+var station_targets: Dictionary = {}   # Station -> Array[Node3D]
+
+# ── Per-station stats ────────────────────────────────────────────
+var stats: Dictionary = {}             # Station -> { shots, hits, heads, bodies, legs, kills }
+
+# ── Hit feedback ring buffer ─────────────────────────────────────
+# Last N hits shown as floating labels on HUD
+const MAX_FEED_ENTRIES: int = 6
+var hit_feed: Array[Dictionary] = []   # [{text, color, age}]
+var show_hit_feed: bool = true
+
+# ── HUD nodes ────────────────────────────────────────────────────
+var station_label: Label
+var tip_label: Label
+var stats_label: Label
+var feed_labels: Array[Label] = []
+var accuracy_bar: ColorRect
+var accuracy_fill: ColorRect
+
+# ── Terrain ──────────────────────────────────────────────────────
 const COLOR_CONCRETE: Color = Color(0.45, 0.45, 0.42)
-const COLOR_SAND: Color = Color(0.76, 0.70, 0.50)
-const COLOR_METAL: Color = Color(0.35, 0.38, 0.42)
-const COLOR_WOOD: Color = Color(0.45, 0.30, 0.15)
-const COLOR_RUBBER: Color = Color(0.18, 0.12, 0.12)
-const COLOR_WALL: Color = Color(0.55, 0.53, 0.50)
-const COLOR_LANE_LINE: Color = Color(0.9, 0.85, 0.2)
+const COLOR_SAND:     Color = Color(0.76, 0.70, 0.50)
+const COLOR_METAL:    Color = Color(0.35, 0.38, 0.42)
+const COLOR_WOOD:     Color = Color(0.45, 0.30, 0.15)
+const COLOR_RUBBER:   Color = Color(0.18, 0.12, 0.12)
+const COLOR_WALL:     Color = Color(0.55, 0.53, 0.50)
+const COLOR_ACCENT:   Color = Color(0.20, 0.55, 0.90)
 
 
 func _ready() -> void:
-		_build_terrain()
-		_build_targets()
-		_build_hud()
-		_connect_weapon_signals()
-		start_round()
+	var player = get_node_or_null("Player")
+	if player:
+		player.process_mode = Node.PROCESS_MODE_DISABLED
+
+	_init_stats()
+	_build_terrain()
+	_build_all_stations()
+	_build_hud()
+	_connect_signals()
+
+	if player:
+		call_deferred("_enable_player", player)
+
+
+func _enable_player(player: Node) -> void:
+	player.process_mode = Node.PROCESS_MODE_INHERIT
 
 
 func _process(delta: float) -> void:
-		if round_active and range_mode == Mode.TIMED:
-				round_time_remaining -= delta
-				if round_time_remaining <= 0.0:
-						round_time_remaining = 0.0
-						end_round()
-				_update_hud()
+	_update_hit_feed(delta)
+	_update_hud()
 
 
 # ══════════════════════════════════════════════════════════════════
-# ROUND MANAGEMENT
+# STATS
 # ══════════════════════════════════════════════════════════════════
 
-func start_round() -> void:
-		round_active = true
-		total_score = 0
-		shots_fired = 0
-		shots_hit = 0
-		headshots = 0
-		round_time_remaining = timed_round_seconds
-		_update_hud()
+func _init_stats() -> void:
+	for s in Station.values():
+		stats[s] = { "shots": 0, "hits": 0, "heads": 0, "bodies": 0, "legs": 0, "kills": 0 }
 
 
-func end_round() -> void:
-		round_active = false
-		var accuracy = (float(shots_hit) / max(float(shots_fired), 1.0)) * 100.0
-		if round_label:
-				round_label.text = "ROUND OVER — Score: %d | Accuracy: %.1f%% | Headshots: %d" % [total_score, accuracy, headshots]
-				round_label.visible = true
+func _reset_station_stats() -> void:
+	var s = current_station
+	stats[s] = { "shots": 0, "hits": 0, "heads": 0, "bodies": 0, "legs": 0, "kills": 0 }
+
+
+func _get_accuracy() -> float:
+	var s = stats[current_station]
+	if s.shots == 0:
+		return 0.0
+	return float(s.hits) / float(s.shots) * 100.0
+
+
+func _get_hs_ratio() -> float:
+	var s = stats[current_station]
+	if s.hits == 0:
+		return 0.0
+	return float(s.heads) / float(s.hits) * 100.0
 
 
 # ══════════════════════════════════════════════════════════════════
-# TERRAIN BUILDER
+# STATION MANAGEMENT
 # ══════════════════════════════════════════════════════════════════
-# The range is laid out along the -Z axis (player faces -Z).
-# Player stands at Z=0, targets are at negative Z distances.
-#
-# Layout (side view, not to scale):
-#
-#  Player  Firing Line  15m Lane  30m Lane  50m Lane  Backstop
-#    |         |           |         |         |          |
-#    Z=0     Z=-2       Z=-15     Z=-30     Z=-50     Z=-60
-#
-# X axis: lanes spread left-right, total width ~30m
 
-func _build_terrain() -> void:
-		_build_floor()
-		_build_backstops()
-		_build_side_walls()
-		_build_lane_dividers()
-		_build_cover_objects()
-		_build_lane_markers()
+func _cycle_station() -> void:
+	var stations = Station.values()
+	var idx = stations.find(current_station)
+	current_station = stations[(idx + 1) % stations.size()]
+	_update_hud()
 
+
+# ══════════════════════════════════════════════════════════════════
+# TERRAIN
+# ══════════════════════════════════════════════════════════════════
 
 func _make_static_box(size: Vector3, position: Vector3, color: Color, parent: Node = self) -> StaticBody3D:
-		var body = StaticBody3D.new()
-		body.position = position
+	var body = StaticBody3D.new()
+	body.position = position
 
-		var mesh_instance = MeshInstance3D.new()
-		var box = BoxMesh.new()
-		box.size = size
-		mesh_instance.mesh = box
-		var mat = StandardMaterial3D.new()
-		mat.albedo_color = color
-		mesh_instance.material_override = mat
-		body.add_child(mesh_instance)
+	var mesh_instance = MeshInstance3D.new()
+	var box = BoxMesh.new()
+	box.size = size
+	mesh_instance.mesh = box
+	var mat = StandardMaterial3D.new()
+	mat.albedo_color = color
+	mesh_instance.material_override = mat
+	body.add_child(mesh_instance)
 
-		var col_shape = CollisionShape3D.new()
-		var shape = BoxShape3D.new()
-		shape.size = size
-		col_shape.shape = shape
-		body.add_child(col_shape)
+	var col_shape = CollisionShape3D.new()
+	var shape = BoxShape3D.new()
+	shape.size = size
+	col_shape.shape = shape
+	body.add_child(col_shape)
 
-		parent.add_child(body)
-		return body
-
-
-func _build_floor() -> void:
-		# Floor slabs are 2m thick to prevent tunneling.
-		# Center Y = -1.0 keeps the top surface at Y = 0.0.
-		const FLOOR_H: float = 2.0
-		const FLOOR_Y: float = -1.0
-
-		# ── Firing Line (Z: 0 to -2) — Concrete ────────────────
-		_make_static_box(Vector3(30, FLOOR_H, 4), Vector3(0, FLOOR_Y, -2), COLOR_CONCRETE)
-
-		# ── Close Range (Z: -2 to -15) — Rubber mat ────────────
-		_make_static_box(Vector3(30, FLOOR_H, 13), Vector3(0, FLOOR_Y, -8.5), COLOR_RUBBER)
-
-		# ── Mid Range (Z: -15 to -30) — Sand ───────────────────
-		_make_static_box(Vector3(30, FLOOR_H, 15), Vector3(0, FLOOR_Y, -22.5), COLOR_SAND)
-
-		# ── Long Range (Z: -30 to -50) — Wood decking ─────────
-		_make_static_box(Vector3(30, FLOOR_H, 20), Vector3(0, FLOOR_Y, -40), COLOR_WOOD)
-
-		# ── Far Back (Z: -50 to -60) — Metal catwalk ───────────
-		_make_static_box(Vector3(30, FLOOR_H, 10), Vector3(0, FLOOR_Y, -55), COLOR_METAL)
+	parent.add_child(body)
+	return body
 
 
-func _build_backstops() -> void:
-		# Back wall at Z=-60 (catches all bullets)
-		_make_static_box(Vector3(32, 6, 1), Vector3(0, 3, -61), COLOR_WALL)
+func _build_terrain() -> void:
+	# One continuous floor, 2m thick, top surface at Y=0
+	_make_static_box(Vector3(30, 2.0, 70), Vector3(0, -1.0, -33), COLOR_CONCRETE)
 
-		# Angled side deflectors
-		_make_static_box(Vector3(1, 4, 5), Vector3(-15.5, 2, -58), COLOR_WALL)
-		_make_static_box(Vector3(1, 4, 5), Vector3(15.5, 2, -58), COLOR_WALL)
+	# Side walls
+	_make_static_box(Vector3(1, 5, 70), Vector3(-15, 2.5, -33), COLOR_WALL)
+	_make_static_box(Vector3(1, 5, 70), Vector3(15, 2.5, -33),  COLOR_WALL)
 
+	# Back wall
+	_make_static_box(Vector3(32, 6, 1), Vector3(0, 3, -68), COLOR_WALL)
 
-func _build_side_walls() -> void:
-		# Left wall
-		_make_static_box(Vector3(1, 4, 65), Vector3(-15.5, 2, -29), COLOR_WALL)
-		# Right wall
-		_make_static_box(Vector3(1, 4, 65), Vector3(15.5, 2, -29), COLOR_WALL)
+	# Station floor zone colours (cosmetic slabs on top of concrete)
+	_make_static_box(Vector3(28, 0.02, 10), Vector3(0, 0.01, -5),   COLOR_RUBBER)   # S1 recoil
+	_make_static_box(Vector3(28, 0.02, 10), Vector3(0, 0.01, -15),  COLOR_SAND)     # S2 first shot
+	_make_static_box(Vector3(28, 0.02, 10), Vector3(0, 0.01, -28),  COLOR_WOOD)     # S3 tracking
+	_make_static_box(Vector3(28, 0.02, 10), Vector3(0, 0.01, -28),  COLOR_METAL)    # S4 (same row)
+	_make_static_box(Vector3(28, 0.02, 12), Vector3(0, 0.01, -44),  COLOR_SAND)     # S5 pressure
 
+	# Distance markers — thin raised strips at 10, 20, 35, 50m
+	for z_dist in [10, 20, 35, 50]:
+		_make_static_box(Vector3(28, 0.05, 0.1), Vector3(0, 0.03, -z_dist), COLOR_ACCENT)
 
-func _build_lane_dividers() -> void:
-		# Three lanes: Left (-10 to -3), Center (-3 to 3), Right (3 to 10)
-		var divider_positions = [-3.0, 3.0]
-		for x in divider_positions:
-				# Low barriers you can see over
-				_make_static_box(Vector3(0.15, 0.6, 30), Vector3(x, 0.3, -15), COLOR_CONCRETE)
-				# Extended dividers for mid+long range
-				_make_static_box(Vector3(0.15, 0.6, 30), Vector3(x, 0.3, -45), COLOR_CONCRETE)
-
-
-func _build_cover_objects() -> void:
-		# Cover near mid-range for tactical practice
-		_make_static_box(Vector3(2, 1.2, 1), Vector3(-7, 0.6, -20), COLOR_CONCRETE)
-		_make_static_box(Vector3(2, 1.2, 1), Vector3(7, 0.6, -20), COLOR_CONCRETE)
-		_make_static_box(Vector3(1, 1.2, 2), Vector3(0, 0.6, -25), COLOR_WOOD)
-
-		# Elevated platform at long range
-		_make_static_box(Vector3(6, 0.3, 4), Vector3(-9, 0.15, -40), COLOR_METAL)
-		# Platform support
-		_make_static_box(Vector3(6, 0.15, 4), Vector3(-9, -0.5, -40), COLOR_METAL)
-
-		# Small barriers for peek practice
-		_make_static_box(Vector3(1.5, 1.5, 0.3), Vector3(-5, 0.75, -35), COLOR_CONCRETE)
-		_make_static_box(Vector3(1.5, 1.5, 0.3), Vector3(5, 0.75, -35), COLOR_CONCRETE)
-
-
-func _build_lane_markers() -> void:
-		# Distance markers on the ground at each lane
-		var distances = [15, 30, 50]
-		var lane_xs = [-6.5, 0.0, 6.5]
-
-		for dist in distances:
-				for x in lane_xs:
-						var marker = MeshInstance3D.new()
-						var plane = PlaneMesh.new()
-						plane.size = Vector2(1.5, 0.3)
-						marker.mesh = plane
-						marker.position = Vector3(x, 0.01, -dist)
-						marker.rotation.x = -PI / 2.0
-						var mat = StandardMaterial3D.new()
-						mat.albedo_color = COLOR_LANE_LINE
-						marker.material_override = mat
-						add_child(marker)
+	# Cover blocks for counter-strafe station
+	_make_static_box(Vector3(1.5, 1.2, 1.5), Vector3(-6, 0.6, -22), COLOR_CONCRETE)
+	_make_static_box(Vector3(1.5, 1.2, 1.5), Vector3(6,  0.6, -22), COLOR_CONCRETE)
 
 
 # ══════════════════════════════════════════════════════════════════
-# TARGET BUILDER
+# TARGET SPAWNING
 # ══════════════════════════════════════════════════════════════════
 
-func _build_targets() -> void:
-		var targets_node = Node3D.new()
-		targets_node.name = "Targets"
-		add_child(targets_node)
+func _build_all_stations() -> void:
+	for s in Station.values():
+		station_targets[s] = []
 
-		# ── Close Range (15m) — Popup targets ──────────────────
-		_spawn_target(targets_node, Vector3(-6, 0, -15), MovingTarget.Pattern.POPUP, 2.0, 1.5)
-		_spawn_target(targets_node, Vector3(0, 0, -15), MovingTarget.Pattern.POPUP, 2.5, 2.0)
-		_spawn_target(targets_node, Vector3(6, 0, -15), MovingTarget.Pattern.POPUP, 1.8, 1.2)
-
-		# ── Mid Range (30m) — Slide + Strafe targets ──────────
-		_spawn_target(targets_node, Vector3(-8, 0, -30), MovingTarget.Pattern.SLIDE, 3.0, 8.0)
-		_spawn_target(targets_node, Vector3(0, 0, -30), MovingTarget.Pattern.STRAFE, 3.5, 6.0)
-		_spawn_target(targets_node, Vector3(8, 0, -30), MovingTarget.Pattern.SLIDE, 4.0, 10.0)
-
-		# ── Long Range (50m) — Slow slide targets ─────────────
-		_spawn_target(targets_node, Vector3(-8, 0, -50), MovingTarget.Pattern.SLIDE, 2.0, 12.0)
-		_spawn_target(targets_node, Vector3(0, 0, -50), MovingTarget.Pattern.STRAFE, 2.5, 8.0)
-		_spawn_target(targets_node, Vector3(8, 0, -50), MovingTarget.Pattern.SLIDE, 1.5, 6.0)
-
-		# ── Charge Lane — Targets that rush you ────────────────
-		_spawn_target(targets_node, Vector3(-6, 0, -45), MovingTarget.Pattern.CHARGE, 4.0, 0.0)
-		_spawn_target(targets_node, Vector3(6, 0, -45), MovingTarget.Pattern.CHARGE, 5.0, 0.0)
+	_build_station_recoil_wall()
+	_build_station_first_shot()
+	_build_station_tracking()
+	_build_station_counter_strafe()
+	_build_station_pressure()
 
 
-func _spawn_target(parent: Node, pos: Vector3, pattern: MovingTarget.Pattern, speed: float, move_range: float) -> void:
-		var target = CharacterBody3D.new()
-		target.set_script(load("res://common/target/moving_target.gd"))
-		target.position = pos
-		target.set("pattern", pattern)
-		target.set("move_speed", speed)
-		target.set("move_range", move_range)
-		target.set("max_health", 100.0)
-		target.set("point_value", 100)
+func _spawn_target(station: Station, pos: Vector3, pattern: MovingTarget.Pattern,
+		speed: float = 0.0, move_range: float = 0.0,
+		popup_show: float = 2.0, popup_hide: float = 1.5,
+		respawn: float = 3.0, points: int = 100) -> MovingTarget:
 
-		# Connect signals
-		target.connect("target_hit", _on_target_hit)
-		target.connect("target_killed", _on_target_killed)
-		target.connect("target_respawned", _on_target_respawned)
+	var target = CharacterBody3D.new()
+	target.set_script(load("res://common/target/moving_target.gd"))
+	target.position = pos
+	target.set("pattern", pattern)
+	target.set("move_speed", speed)
+	target.set("move_range", move_range)
+	target.set("popup_show_time", popup_show)
+	target.set("popup_hide_time", popup_hide)
+	target.set("max_health", 100.0)
+	target.set("respawn_time", respawn)
+	target.set("point_value", points)
 
-		parent.add_child(target)
-		targets.append(target)
+	target.connect("target_hit",      _on_target_hit.bind(station))
+	target.connect("target_killed",   _on_target_killed.bind(station))
+	target.connect("target_respawned", _on_target_respawned)
+
+	add_child(target)
+	station_targets[station].append(target)
+	return target
+
+
+# ── Station 1: Recoil Wall ───────────────────────────────────────
+# One static target close up. Full-magazine spray reveals recoil
+# pattern via per-zone flashes — head/body/legs light up where
+# bullets land, building muscle memory for pull-down correction.
+
+func _build_station_recoil_wall() -> void:
+	# Three targets side by side — try each with a different gun
+	_spawn_target(Station.RECOIL_WALL, Vector3(-3, 0, -8),  MovingTarget.Pattern.STATIC, 0, 0, 0, 0, 1.5, 50)
+	_spawn_target(Station.RECOIL_WALL, Vector3(0,  0, -8),  MovingTarget.Pattern.STATIC, 0, 0, 0, 0, 1.5, 50)
+	_spawn_target(Station.RECOIL_WALL, Vector3(3,  0, -8),  MovingTarget.Pattern.STATIC, 0, 0, 0, 0, 1.5, 50)
+
+
+# ── Station 2: First Shot Accuracy ──────────────────────────────
+# Short popup window forces deliberate single shots.
+# popup_hide gives time to stop moving and let bloom settle.
+
+func _build_station_first_shot() -> void:
+	# Left lane: slow popup, forgiving timing
+	_spawn_target(Station.FIRST_SHOT, Vector3(-6, 0, -20), MovingTarget.Pattern.POPUP, 0, 0, 0.8, 2.2, 0.1, 150)
+	# Center lane: medium
+	_spawn_target(Station.FIRST_SHOT, Vector3(0,  0, -20), MovingTarget.Pattern.POPUP, 0, 0, 0.8, 1.8, 0.1, 150)
+	# Right lane: tight timing
+	_spawn_target(Station.FIRST_SHOT, Vector3(6,  0, -20), MovingTarget.Pattern.POPUP, 0, 0, 0.8, 1.5, 0.1, 150)
+
+	# Back row at 30m: harder distance, same popup timing
+	_spawn_target(Station.FIRST_SHOT, Vector3(-4, 0, -30), MovingTarget.Pattern.POPUP, 0, 0, 0.8, 2.0, 0.1, 200)
+	_spawn_target(Station.FIRST_SHOT, Vector3(4,  0, -30), MovingTarget.Pattern.POPUP, 0, 0, 0.8, 2.0, 0.1, 200)
+
+
+# ── Station 3: Tracking ──────────────────────────────────────────
+# Sliding targets at varying speeds and ranges.
+# Mix of horizontal (SLIDE) and depth (STRAFE) movement.
+
+func _build_station_tracking() -> void:
+	# Close: slow slide, large movement range — warming up
+	_spawn_target(Station.TRACKING, Vector3(0, 0, -25), MovingTarget.Pattern.SLIDE, 2.5, 8.0, 0, 0, 2.0, 100)
+
+	# Mid: faster, tighter range — requires tighter tracking
+	_spawn_target(Station.TRACKING, Vector3(-4, 0, -35), MovingTarget.Pattern.SLIDE,  4.0, 6.0, 0, 0, 2.0, 150)
+	_spawn_target(Station.TRACKING, Vector3(4,  0, -35), MovingTarget.Pattern.SLIDE,  4.5, 5.0, 0, 0, 2.0, 150)
+
+	# Depth mover — harder to judge distance, tests tracking on Z axis
+	_spawn_target(Station.TRACKING, Vector3(0, 0, -40), MovingTarget.Pattern.STRAFE, 3.0, 7.0, 0, 0, 2.0, 200)
+
+
+# ── Station 4: Counter-Strafe ────────────────────────────────────
+# Targets peek from behind the cover blocks built in terrain.
+# Popup windows are short — you must move into position, STOP,
+# let the crosshair settle, then fire. Moving while firing is
+# punished by spread and the narrow window.
+
+func _build_station_counter_strafe() -> void:
+	# Left peek target: visible only from left side of center
+	_spawn_target(Station.COUNTER_STRAFE, Vector3(-9, 0, -30), MovingTarget.Pattern.POPUP, 0, 0, 1.2, 1.8, 0.2, 200)
+	# Right peek target: visible only from right side
+	_spawn_target(Station.COUNTER_STRAFE, Vector3(9,  0, -30), MovingTarget.Pattern.POPUP, 0, 0, 1.2, 1.8, 0.2, 200)
+	# Center target: always visible but offset popup timing
+	_spawn_target(Station.COUNTER_STRAFE, Vector3(0,  0, -35), MovingTarget.Pattern.POPUP, 0, 0, 1.0, 2.5, 0.2, 150)
+
+
+# ── Station 5: Pressure ──────────────────────────────────────────
+# Chargers come from 50m. Multiple waves. Tests whether panic
+# causes you to spray wildly or stay composed for headshots.
+# Short respawn so pressure is constant.
+
+func _build_station_pressure() -> void:
+	_spawn_target(Station.PRESSURE, Vector3(-5, 0, -50), MovingTarget.Pattern.CHARGE, 4.5, 0, 0, 0, 2.0, 300)
+	_spawn_target(Station.PRESSURE, Vector3(0,  0, -55), MovingTarget.Pattern.CHARGE, 4.0, 0, 0, 0, 2.5, 300)
+	_spawn_target(Station.PRESSURE, Vector3(5,  0, -50), MovingTarget.Pattern.CHARGE, 5.0, 0, 0, 0, 1.8, 300)
+	# Flankers come from wider angles
+	_spawn_target(Station.PRESSURE, Vector3(-10, 0, -45), MovingTarget.Pattern.CHARGE, 3.5, 0, 0, 0, 3.0, 400)
+	_spawn_target(Station.PRESSURE, Vector3(10,  0, -45), MovingTarget.Pattern.CHARGE, 3.5, 0, 0, 0, 3.0, 400)
 
 
 # ══════════════════════════════════════════════════════════════════
-# TARGET EVENT HANDLERS
+# SIGNAL HANDLERS
 # ══════════════════════════════════════════════════════════════════
 
-func _on_target_hit(zone: int, damage: float, points: int) -> void:
-		shots_hit += 1
-		total_score += points
-		if zone == 0:  # HitZone.HEAD = 0
-				headshots += 1
-
-
-func _on_target_killed(points: int) -> void:
-		total_score += points
-
-
-func _on_target_respawned() -> void:
-		pass  # Target is back in play
-
-
-# ══════════════════════════════════════════════════════════════════
-# WEAPON SHOT TRACKING
-# ══════════════════════════════════════════════════════════════════
-
-func _connect_weapon_signals() -> void:
-		# Track shots fired via the camera_shake signal (fires every shot)
-		# This is a simple heuristic — we count every shake as a shot
-		Global.camera_shake.connect(_on_shot_fired)
+func _connect_signals() -> void:
+	Global.camera_shake.connect(_on_shot_fired)
 
 
 func _on_shot_fired() -> void:
-		shots_fired += 1
+	stats[current_station].shots += 1
+
+
+func _on_target_hit(zone: MovingTarget.HitZone, damage: float, points: int, station: Station) -> void:
+	if station != current_station:
+		return
+
+	stats[current_station].hits += 1
+
+	match zone:
+		MovingTarget.HitZone.HEAD:
+			stats[current_station].heads += 1
+			_add_feed("HEADSHOT  +%d" % points, Color(1.0, 0.75, 0.0))
+		MovingTarget.HitZone.BODY:
+			stats[current_station].bodies += 1
+			_add_feed("Body  +%d" % points, Color(0.85, 0.85, 0.85))
+		MovingTarget.HitZone.LEGS:
+			stats[current_station].legs += 1
+			_add_feed("Leg  +%d" % points, Color(0.55, 0.65, 1.0))
+
+
+func _on_target_killed(points: int, station: Station) -> void:
+	if station != current_station:
+		return
+	stats[current_station].kills += 1
+	_add_feed("KILL  +%d" % points, Color(0.3, 1.0, 0.4))
+
+
+func _on_target_respawned() -> void:
+	pass
+
+
+# ══════════════════════════════════════════════════════════════════
+# HIT FEED
+# ══════════════════════════════════════════════════════════════════
+
+func _add_feed(text: String, color: Color) -> void:
+	if not show_hit_feed:
+		return
+	hit_feed.push_front({ "text": text, "color": color, "age": 0.0 })
+	if hit_feed.size() > MAX_FEED_ENTRIES:
+		hit_feed.resize(MAX_FEED_ENTRIES)
+
+
+func _update_hit_feed(delta: float) -> void:
+	for i in hit_feed.size():
+		hit_feed[i].age += delta
+
+	# Remove entries older than 2 seconds
+	hit_feed = hit_feed.filter(func(e): return e.age < 2.0)
+
+	# Sync to labels
+	for i in feed_labels.size():
+		if i < hit_feed.size():
+			var entry = hit_feed[i]
+			var alpha = clamp(1.0 - (entry.age - 1.2) / 0.8, 0.0, 1.0)
+			var c = entry.color
+			feed_labels[i].text = entry.text
+			feed_labels[i].add_theme_color_override("font_color", Color(c.r, c.g, c.b, alpha))
+		else:
+			feed_labels[i].text = ""
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -298,74 +409,129 @@ func _on_shot_fired() -> void:
 # ══════════════════════════════════════════════════════════════════
 
 func _build_hud() -> void:
-		var canvas = CanvasLayer.new()
-		canvas.layer = 10
-		add_child(canvas)
+	var canvas = CanvasLayer.new()
+	canvas.layer = 10
+	add_child(canvas)
 
-		var panel = Panel.new()
-		panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
-		panel.position = Vector2(10, 10)
-		panel.size = Vector2(280, 140)
-		panel.self_modulate = Color(0, 0, 0, 0.6)
-		canvas.add_child(panel)
+	# ── Station name + tip (top centre) ─────────────────────────
+	station_label = Label.new()
+	station_label.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	station_label.position = Vector2(0, 14)
+	station_label.size = Vector2(0, 32)
+	station_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	station_label.add_theme_font_size_override("font_size", 22)
+	station_label.add_theme_color_override("font_color", Color(1.0, 0.85, 0.2))
+	canvas.add_child(station_label)
 
-		# Score
-		score_label = Label.new()
-		score_label.position = Vector2(15, 8)
-		score_label.size = Vector2(260, 24)
-		score_label.add_theme_font_size_override("font_size", 20)
-		score_label.add_theme_color_override("font_color", Color(1, 0.9, 0.3))
-		canvas.add_child(score_label)
+	tip_label = Label.new()
+	tip_label.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	tip_label.position = Vector2(0, 42)
+	tip_label.size = Vector2(0, 22)
+	tip_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tip_label.add_theme_font_size_override("font_size", 13)
+	tip_label.add_theme_color_override("font_color", Color(0.75, 0.75, 0.75))
+	canvas.add_child(tip_label)
 
-		# Stats
-		hud_label = Label.new()
-		hud_label.position = Vector2(15, 35)
-		hud_label.size = Vector2(260, 70)
-		hud_label.add_theme_font_size_override("font_size", 14)
-		hud_label.add_theme_color_override("font_color", Color(0.85, 0.85, 0.85))
-		canvas.add_child(hud_label)
+	# ── Stats panel (top left) ───────────────────────────────────
+	var panel = Panel.new()
+	panel.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	panel.position = Vector2(12, 12)
+	panel.size = Vector2(210, 130)
+	panel.self_modulate = Color(0, 0, 0, 0.55)
+	canvas.add_child(panel)
 
-		# Round info
-		round_label = Label.new()
-		round_label.position = Vector2(15, 105)
-		round_label.size = Vector2(260, 24)
-		round_label.add_theme_font_size_override("font_size", 14)
-		round_label.add_theme_color_override("font_color", Color(0.7, 1.0, 0.7))
-		canvas.add_child(round_label)
+	stats_label = Label.new()
+	stats_label.position = Vector2(20, 18)
+	stats_label.size = Vector2(190, 108)
+	stats_label.add_theme_font_size_override("font_size", 13)
+	stats_label.add_theme_color_override("font_color", Color(0.88, 0.88, 0.88))
+	canvas.add_child(stats_label)
 
-		_update_hud()
+	# ── Accuracy bar (below stats panel) ────────────────────────
+	accuracy_bar = ColorRect.new()
+	accuracy_bar.position = Vector2(12, 148)
+	accuracy_bar.size = Vector2(210, 8)
+	accuracy_bar.color = Color(0.2, 0.2, 0.2, 0.7)
+	canvas.add_child(accuracy_bar)
+
+	accuracy_fill = ColorRect.new()
+	accuracy_fill.position = Vector2(12, 148)
+	accuracy_fill.size = Vector2(0, 8)
+	accuracy_fill.color = Color(0.3, 0.9, 0.3, 0.85)
+	canvas.add_child(accuracy_fill)
+
+	# ── Hit feed (right side) ────────────────────────────────────
+	var feed_x = 0.75  # 75% of screen width
+	for i in MAX_FEED_ENTRIES:
+		var lbl = Label.new()
+		lbl.set_anchor(SIDE_LEFT, feed_x)
+		lbl.set_anchor(SIDE_RIGHT, 1.0)
+		lbl.position = Vector2(0, 80 + i * 26)
+		lbl.size = Vector2(0, 24)
+		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		lbl.add_theme_font_size_override("font_size", 15)
+		lbl.text = ""
+		canvas.add_child(lbl)
+		feed_labels.append(lbl)
+
+	# ── Controls reminder (bottom) ───────────────────────────────
+	var ctrl_label = Label.new()
+	ctrl_label.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	ctrl_label.position = Vector2(0, -26)
+	ctrl_label.size = Vector2(0, 22)
+	ctrl_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	ctrl_label.add_theme_font_size_override("font_size", 12)
+	ctrl_label.add_theme_color_override("font_color", Color(0.5, 0.5, 0.5))
+	ctrl_label.text = "TAB — next station    R — reset stats    F1 — toggle hit feed"
+	canvas.add_child(ctrl_label)
 
 
 func _update_hud() -> void:
-		if not score_label:
-				return
+	if not stats_label:
+		return
 
-		var accuracy = 0.0
-		if shots_fired > 0:
-				accuracy = (float(shots_hit) / float(shots_fired)) * 100.0
+	var s = stats[current_station]
+	var acc = _get_accuracy()
+	var hs = _get_hs_ratio()
 
-		score_label.text = "SCORE: %d" % total_score
+	station_label.text = STATION_NAMES[current_station]
+	tip_label.text = STATION_TIPS[current_station]
 
-		hud_label.text = "Hits: %d / %d  (%.1f%%)\nHeadshots: %d" % [shots_hit, shots_fired, accuracy, headshots]
+	stats_label.text = (
+		"Shots:    %d\n" % s.shots +
+		"Hits:     %d  (%.0f%%)\n" % [s.hits, acc] +
+		"Head:     %d  (%.0f%% of hits)\n" % [s.heads, hs] +
+		"Body:     %d\n" % s.bodies +
+		"Legs:     %d\n" % s.legs +
+		"Kills:    %d" % s.kills
+	)
 
-		match range_mode:
-				Mode.FREE_PLAY:
-						round_label.text = "FREE PLAY — press R to reset score"
-				Mode.TIMED:
-						var secs = int(round_time_remaining)
-						round_label.text = "TIME: %d:%02d" % [secs / 60, secs % 60]
-				Mode.PRECISION:
-						round_label.text = "PRECISION — accuracy counts"
-				Mode.SURVIVAL:
-						round_label.text = "SURVIVAL — don't let them reach you"
+	# Accuracy bar width
+	if accuracy_fill:
+		accuracy_fill.size.x = (acc / 100.0) * 210.0
+		# Colour: red → yellow → green based on accuracy
+		if acc >= 60.0:
+			accuracy_fill.color = Color(0.3, 0.9, 0.3, 0.85)
+		elif acc >= 35.0:
+			accuracy_fill.color = Color(0.9, 0.75, 0.1, 0.85)
+		else:
+			accuracy_fill.color = Color(0.9, 0.25, 0.15, 0.85)
 
+
+# ══════════════════════════════════════════════════════════════════
+# INPUT
+# ══════════════════════════════════════════════════════════════════
 
 func _unhandled_input(event: InputEvent) -> void:
-		if event.is_action_pressed("reload"):
-				# R key resets score in free play
-				if range_mode == Mode.FREE_PLAY:
-						total_score = 0
-						shots_fired = 0
-						shots_hit = 0
-						headshots = 0
-						_update_hud()
+	# TAB — cycle station
+	if event is InputEventKey and event.pressed and not event.echo:
+		match event.keycode:
+			KEY_TAB:
+				_cycle_station()
+			KEY_R:
+				_reset_station_stats()
+			KEY_F1:
+				show_hit_feed = not show_hit_feed
+				if not show_hit_feed:
+					for lbl in feed_labels:
+						lbl.text = ""

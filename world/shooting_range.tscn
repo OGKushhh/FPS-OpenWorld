@@ -37,7 +37,7 @@ light_energy = 2.0
 shadow_enabled = true
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 1)
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
