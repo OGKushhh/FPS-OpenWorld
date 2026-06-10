@@ -210,9 +210,8 @@ enum HitZone { HEAD, BODY, LEGS }
 # ══════════════════════════════════════════════════════════════════
 # CAMERA RECOIL INTEGRATION
 # ══════════════════════════════════════════════════════════════════
-
-var camera_pivot_ref: Node3D   # References to player camera nodes for recoil
-var camera_holder_ref: Node3D
+# Recoil now routes through Global.player.rotation_yaw/pitch accumulators
+# instead of direct node rotation. No separate refs needed.
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -242,13 +241,15 @@ func _process(delta: float) -> void:
                 if recoil_recovery_timer >= recoil_recovery_delay:
                         var old_pitch = recoil_accumulated_pitch
                         var old_yaw = recoil_accumulated_yaw
+                        # Recovery speed is in degrees/second — stay in degrees for the tracking
                         var recovery_rate = recoil_recovery_speed * delta
                         recoil_accumulated_pitch = move_toward(recoil_accumulated_pitch, 0.0, recovery_rate)
                         recoil_accumulated_yaw = move_toward(recoil_accumulated_yaw, 0.0, recovery_rate)
 
+                        # Delta is in degrees — convert to radians for camera
                         var pitch_delta = old_pitch - recoil_accumulated_pitch
                         var yaw_delta = old_yaw - recoil_accumulated_yaw
-                        _apply_recoil_to_camera(-pitch_delta, -yaw_delta)
+                        _apply_recoil_to_camera(-deg_to_rad(pitch_delta), -deg_to_rad(yaw_delta))
 
                         if abs(recoil_accumulated_pitch) < 0.01 and abs(recoil_accumulated_yaw) < 0.01:
                                 recoil_accumulated_pitch = 0.0
@@ -276,8 +277,9 @@ func initialize(camera: Camera3D, raycast: RayCast3D, raycast_origin: Node3D) ->
         self.ray_cast_origin = raycast_origin
 
         if Global.player:
-                camera_pivot_ref = Global.player.camera_pivot
-                camera_holder_ref = Global.player.camera_holder
+                # Player references are accessed via Global.player directly
+                # (rotation_yaw, rotation_pitch, camera_pivot, camera_holder)
+                pass
 
 
 func activate(current_aim_mode: bool = false) -> void:
@@ -369,8 +371,10 @@ func fire_weapon() -> void:
                 # Mark as firing — bloom will NOT decay while this is true
                 is_firing = true
 
-                recoil_pitch = _get_recoil_pitch()
-                recoil_yaw = _get_recoil_yaw()
+                # Recoil pattern values are in DEGREES but rotation
+                # accumulators use RADIANS. Convert before applying.
+                recoil_pitch = deg_to_rad(_get_recoil_pitch())
+                recoil_yaw = deg_to_rad(_get_recoil_yaw())
 
                 if is_aimed:
                         recoil_pitch *= ads_recoil_multiplier
@@ -379,9 +383,11 @@ func fire_weapon() -> void:
                         recoil_pitch *= recoil_crouch_multiplier
                         recoil_yaw *= recoil_crouch_multiplier
 
-                recoil_accumulated_pitch += recoil_pitch
-                recoil_accumulated_yaw += recoil_yaw
+                # Track in degrees for crosshair snap pixel math
+                recoil_accumulated_pitch += _get_recoil_pitch()
+                recoil_accumulated_yaw += _get_recoil_yaw()
 
+                # Apply in radians to rotation accumulators
                 _apply_recoil_to_camera(recoil_pitch, recoil_yaw)
 
                 is_recovering = false
@@ -512,20 +518,46 @@ func _get_recoil_yaw() -> float:
 
 
 func _apply_recoil_to_camera(pitch_offset: float, yaw_offset: float) -> void:
-        if not camera_pivot_ref or not camera_holder_ref:
+        # Recoil must go through the player's rotation accumulators,
+        # NOT directly to camera nodes. Since player.gd now uses
+        # absolute assignment (rotation.y = rotation_yaw) instead of
+        # incremental rotate_y(), any direct rotate_x/y here would be
+        # overwritten on the next mouse move.
+        #
+        # By modifying the accumulators, mouse look and recoil share
+        # the same precision pipeline with zero conflict.
+        #
+        # SIGN CONVENTION (Godot coordinate system):
+        #   rotation.x POSITIVE = looking UP   (forward -Z rotates toward +Y)
+        #   rotation.x NEGATIVE = looking DOWN (forward -Z rotates toward -Y)
+        #   rotation.y NEGATIVE = looking RIGHT (forward -Z rotates toward +X)
+        #   rotation.y POSITIVE = looking LEFT  (forward -Z rotates toward -X)
+        #
+        # Therefore:
+        #   pitch_offset positive (recoil kicks UP) → rotation_pitch += positive → looks UP ✓
+        #   yaw_offset positive (recoil kicks RIGHT) → rotation_yaw -= positive → looks RIGHT ✓
+        if not Global.player:
                 return
 
-        camera_holder_ref.rotate_x(-pitch_offset)
-        camera_pivot_ref.rotate_y(-yaw_offset)
+        Global.player.rotation_pitch += pitch_offset
+        Global.player.rotation_yaw -= yaw_offset
 
-        camera_holder_ref.rotation.x = clamp(
-                camera_holder_ref.rotation.x,
-                deg_to_rad(-89),
-                deg_to_rad(89)
+        # Clamp pitch through the accumulator to prevent flipping
+        Global.player.rotation_pitch = clamp(
+                Global.player.rotation_pitch,
+                -Global.player.PITCH_LIMIT,
+                Global.player.PITCH_LIMIT
         )
+
+        # NOTE: Do NOT set camera node rotations here.
+        # player.gd's _input() is the single source of truth for camera
+        # rotation. It applies: rotation_pitch + shake_pitch → camera.
+        # If we set camera nodes here, it creates a race condition where
+        # mouse look overwrites recoil on the next frame.
 
 
 func _begin_recoil_recovery() -> void:
+        bullets_fired_in_spray = 0
         if abs(recoil_accumulated_pitch) > 0.01 or abs(recoil_accumulated_yaw) > 0.01:
                 is_recovering = true
                 recoil_recovery_timer = 0.0

@@ -1,10 +1,12 @@
 extends Node3D
 
-# Camera shake
+# Camera shake — flows through player's rotation accumulators
+# Instead of tweening camera_holder.rotation directly (which fights with
+# the accumulator pipeline in player.gd), we set shake offsets on the
+# player node. These get applied in player.gd's _input() alongside
+# rotation_pitch/rotation_yaw, so there's zero conflict.
 @export var shake_intensity: float = 0.02
 @export var shake_duration: float = 0.1
-var shake_tween: Tween
-var original_camera_rotation: Vector3
 
 # FOV management
 const BASE_FOV: float = 71.0  # 71° vertical ≈ 103° horizontal at 16:9 (Valorant default)
@@ -31,6 +33,14 @@ func _ready() -> void:
 func _process(delta: float) -> void:
         # Smoothly interpolate camera FOV
         main_camera.fov = lerp(main_camera.fov, target_fov, delta * 15.0)  # 15.0 = Valorant-style fast FOV transition
+
+        # Decay camera shake offset toward zero
+        # Uses the player's shake_pitch/shake_yaw so it flows through
+        # the same accumulator pipeline as mouse look and recoil.
+        if Global.player:
+                var shake_decay_rate = shake_intensity / max(shake_duration, 0.001)
+                Global.player.shake_pitch = move_toward(Global.player.shake_pitch, 0.0, delta * shake_decay_rate)
+                Global.player.shake_yaw = move_toward(Global.player.shake_yaw, 0.0, delta * shake_decay_rate)
 
 
 func _on_weapon_aim_fov_changed(fov_angle: float) -> void:
@@ -67,22 +77,10 @@ func _update_target_fov() -> void:
 
 
 func _on_camera_shake() -> void:
-        # Kill existing shake tween if running
-        if shake_tween:
-                shake_tween.kill()
-
-        # Store original rotation (excluding recoil offsets)
-        original_camera_rotation = camera_holder.rotation
-
-        # Apply random shake offset
-        var shake_offset = Vector3(
-                randf_range(-shake_intensity, shake_intensity),
-                randf_range(-shake_intensity, shake_intensity),
-                randf_range(-shake_intensity, shake_intensity)
-        )
-
-        camera_holder.rotation = original_camera_rotation + shake_offset
-
-        # Tween back to original rotation
-        shake_tween = create_tween()
-        shake_tween.tween_property(camera_holder, "rotation", original_camera_rotation, shake_duration)
+        # Set shake offset on the player's accumulator variables.
+        # These get applied in player.gd's _input() alongside rotation_pitch/yaw,
+        # so the shake is purely additive and never fights with mouse look or recoil.
+        # Decay happens in _process() above.
+        if Global.player:
+                Global.player.shake_pitch = randf_range(-shake_intensity, shake_intensity)
+                Global.player.shake_yaw = randf_range(-shake_intensity, shake_intensity)

@@ -54,6 +54,17 @@ var snap_lerp_speed: float = 20.0  # How fast the crosshair snaps to spray
 func _ready() -> void:
         Global.aim_mode_changed.connect(_on_aim_mode_changed)
         Global.player_velocity_changed.connect(_on_player_velocity_changed)
+
+        # Linear texture filter enables sub-pixel crosshair positioning.
+        # With Nearest (default), the crosshair snaps to whole pixels and
+        # looks jittery when tracing targets at high DPI. Linear lets it
+        # glide smoothly across fractional pixel positions.
+        texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+
+        # Defer setup by one frame so size.y has a valid value.
+        # In _ready(), the Control rect may not be resolved yet,
+        # causing size.y == 0 which breaks pixel-per-degree math.
+        await get_tree().process_frame
         _setup_crosshair()
 
 

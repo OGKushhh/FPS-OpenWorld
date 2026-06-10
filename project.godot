@@ -43,6 +43,8 @@ player=""
 
 [input]
 
+buffering/agile_input_event_flushing=true
+
 aim_mode={
 "deadzone": 0.2,
 "events": [Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":2,"position":Vector2(295, 28),"global_position":Vector2(309, 101),"factor":1.0,"button_index":2,"canceled":false,"pressed":true,"double_click":false,"script":null)
@@ -119,15 +121,11 @@ brake={
 ]
 }
 
-[input_devices]
+[physics]
 
-buffering/agile_event_flushing=true
+common/physics_ticks_per_second=128
 
 [layer_names]
 
 3d_render/layer_1="default"
 3d_render/layer_2="weapon"
-
-[physics]
-
-common/physics_ticks_per_second=128
