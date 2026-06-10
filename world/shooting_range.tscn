@@ -1,0 +1,44 @@
+[gd_scene format=3 uid="uid://shootrange001"]
+
+[ext_resource type="Script" uid="uid://bee0xk53hkjjw" path="res://common/managers/input_manager.gd" id="1_input"]
+[ext_resource type="PackedScene" uid="uid://cdbipjyx57al2" path="res://player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://cyu64gank77ya" path="res://common/hud/gameplay_hud.tscn" id="3_hud"]
+[ext_resource type="Script" path="res://world/shooting_range.gd" id="4_range"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_range"]
+sky_horizon_color = Color(0.75, 0.78, 0.82, 1)
+ground_horizon_color = Color(0.75, 0.78, 0.82, 1)
+energy_multiplier = 2.0
+
+[sub_resource type="Sky" id="Sky_range"]
+sky_material = SubResource("ProceduralSkyMaterial_range")
+
+[sub_resource type="Environment" id="Environment_range"]
+background_mode = 2
+sky = SubResource("Sky_range")
+tonemap_mode = 2
+glow_enabled = true
+ambient_light_source = 2
+ambient_light_color = Color(0.6, 0.65, 0.7, 1)
+
+[node name="ShootingRange" type="Node3D"]
+script = ExtResource("4_range")
+
+[node name="InputManager" type="Node" parent="."]
+script = ExtResource("1_input")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_range")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866, 0, -0.866, 0.5, 0, 0, 0)
+layers = 3
+light_energy = 2.0
+shadow_enabled = true
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Control" parent="HUD" instance=ExtResource("3_hud")]

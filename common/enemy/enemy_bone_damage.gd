@@ -13,6 +13,6 @@ enum HitZone { HEAD, BODY, LEGS }
 signal update_damage(damage: float, direction: Vector3, zone: HitZone)
 
 
-func get_damage(damage: float, direction: Vector3) -> void:
-	var final_damage = damage * damage_multiplier
-	update_damage.emit(final_damage, direction, hit_zone)
+func get_damage(damage: float, direction: Vector3, _hit_point: Variant = null) -> void:
+        var final_damage = damage * damage_multiplier
+        update_damage.emit(final_damage, direction, hit_zone)

@@ -188,9 +188,10 @@ func _deal_damage():
                 player.get_damage(attack_damage,direction, true)
 
 
-func get_damage(damage: float, _direction: Vector3, hit_zone = 0) -> void:
-        # hit_zone comes from enemy_bone_damage.gd HitZone enum
-        # For direct hits (not through bones), hit_zone defaults to BODY (0)
+func get_damage(damage: float, _direction: Vector3, _hit_point: Variant = null) -> void:
+        # _hit_point is passed by weapon.gd for hit zone detection.
+        # The bone damage system handles its own multipliers, so
+        # direct hits (not through bones) use flat damage here.
         current_health -= damage
         update_health_bar()
         play_sfx(hit_sfx)
