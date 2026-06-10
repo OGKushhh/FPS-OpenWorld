@@ -7,9 +7,9 @@ var shake_tween: Tween
 var original_camera_rotation: Vector3
 
 # FOV management
-const BASE_FOV: float = 75.0
-const SPRINT_FOV: float = 85.0
-const CROUCH_FOV: float = 72.0  # Slightly tighter FOV when crouching
+const BASE_FOV: float = 71.0  # 71° vertical ≈ 103° horizontal at 16:9 (Valorant default)
+const SPRINT_FOV: float = 82.0  # Slight FOV increase on sprint
+const CROUCH_FOV: float = 68.0  # Slightly tighter FOV when crouching
 var target_fov: float = BASE_FOV
 var is_sprinting: bool = false
 var is_aiming: bool = false
@@ -21,68 +21,68 @@ var weapon_aim_fov: float = 60.0
 
 
 func _ready() -> void:
-	Global.camera_shake.connect(_on_camera_shake)
-	Global.active_camera_fov_changed.connect(_on_weapon_aim_fov_changed)
-	Global.player_sprinting_changed.connect(_on_player_sprinting_changed)
-	Global.player_crouching_changed.connect(_on_player_crouching_changed)
-	Global.aim_mode_changed.connect(_on_aim_mode_changed)
+        Global.camera_shake.connect(_on_camera_shake)
+        Global.active_camera_fov_changed.connect(_on_weapon_aim_fov_changed)
+        Global.player_sprinting_changed.connect(_on_player_sprinting_changed)
+        Global.player_crouching_changed.connect(_on_player_crouching_changed)
+        Global.aim_mode_changed.connect(_on_aim_mode_changed)
 
 
 func _process(delta: float) -> void:
-	# Smoothly interpolate camera FOV
-	main_camera.fov = lerp(main_camera.fov, target_fov, delta * 10.0)
+        # Smoothly interpolate camera FOV
+        main_camera.fov = lerp(main_camera.fov, target_fov, delta * 15.0)  # 15.0 = Valorant-style fast FOV transition
 
 
 func _on_weapon_aim_fov_changed(fov_angle: float) -> void:
-	# Store weapon aim FOV for when we're in aim mode
-	weapon_aim_fov = fov_angle
-	_update_target_fov()
+        # Store weapon aim FOV for when we're in aim mode
+        weapon_aim_fov = fov_angle
+        _update_target_fov()
 
 
 func _on_player_sprinting_changed(sprinting: bool) -> void:
-	is_sprinting = sprinting
-	_update_target_fov()
+        is_sprinting = sprinting
+        _update_target_fov()
 
 
 func _on_player_crouching_changed(crouching: bool) -> void:
-	is_crouching = crouching
-	_update_target_fov()
+        is_crouching = crouching
+        _update_target_fov()
 
 
 func _on_aim_mode_changed(aim_mode: bool) -> void:
-	is_aiming = aim_mode
-	_update_target_fov()
+        is_aiming = aim_mode
+        _update_target_fov()
 
 
 func _update_target_fov() -> void:
-	# Priority: Aim mode > Sprint > Crouch > Base
-	if is_aiming:
-		target_fov = weapon_aim_fov
-	elif is_sprinting:
-		target_fov = SPRINT_FOV
-	elif is_crouching:
-		target_fov = CROUCH_FOV
-	else:
-		target_fov = BASE_FOV
+        # Priority: Aim mode > Sprint > Crouch > Base
+        if is_aiming:
+                target_fov = weapon_aim_fov
+        elif is_sprinting:
+                target_fov = SPRINT_FOV
+        elif is_crouching:
+                target_fov = CROUCH_FOV
+        else:
+                target_fov = BASE_FOV
 
 
 func _on_camera_shake() -> void:
-	# Kill existing shake tween if running
-	if shake_tween:
-		shake_tween.kill()
+        # Kill existing shake tween if running
+        if shake_tween:
+                shake_tween.kill()
 
-	# Store original rotation (excluding recoil offsets)
-	original_camera_rotation = camera_holder.rotation
+        # Store original rotation (excluding recoil offsets)
+        original_camera_rotation = camera_holder.rotation
 
-	# Apply random shake offset
-	var shake_offset = Vector3(
-		randf_range(-shake_intensity, shake_intensity),
-		randf_range(-shake_intensity, shake_intensity),
-		randf_range(-shake_intensity, shake_intensity)
-	)
+        # Apply random shake offset
+        var shake_offset = Vector3(
+                randf_range(-shake_intensity, shake_intensity),
+                randf_range(-shake_intensity, shake_intensity),
+                randf_range(-shake_intensity, shake_intensity)
+        )
 
-	camera_holder.rotation = original_camera_rotation + shake_offset
+        camera_holder.rotation = original_camera_rotation + shake_offset
 
-	# Tween back to original rotation
-	shake_tween = create_tween()
-	shake_tween.tween_property(camera_holder, "rotation", original_camera_rotation, shake_duration)
+        # Tween back to original rotation
+        shake_tween = create_tween()
+        shake_tween.tween_property(camera_holder, "rotation", original_camera_rotation, shake_duration)

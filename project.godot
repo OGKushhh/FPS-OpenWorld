@@ -119,6 +119,10 @@ brake={
 ]
 }
 
+[input_devices]
+
+buffering/agile_event_flushing=true
+
 [layer_names]
 
 3d_render/layer_1="default"

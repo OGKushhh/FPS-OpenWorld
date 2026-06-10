@@ -42,10 +42,25 @@ enum WeaponClass {
 @export var reload_time: float = 1.5
 
 @export_group("gameplay connections")
-@export var focused_aim_fov: float = 60.0
 
 # Aim transition settings
 const AIM_TRANSITION_DURATION: float = 0.2
+
+# ── ADS Math Multipliers (Valorant Scaling Rules) ─────────────────
+# When ADS activates, three mathematical operations change instantly:
+# 1) FOV Zoom:      base_fov * ads_fov_multiplier      (20% zoom)
+# 2) Recoil Scale:  recoil * ads_recoil_multiplier      (15% less spray)
+# 3) Fire Rate:     rate * ads_firerate_multiplier      (10% slower cycle)
+# Base spread is wiped to 0.0 in ADS (perfect first shot).
+# Movement penalties remain at FULL value even in ADS (no run-and-gun!).
+
+@export_group("ADS Math Multipliers")
+@export var ads_fov_multiplier: float = 0.80        # 20% zoom — 71° * 0.80 = 56.8° ADS FOV
+@export var ads_recoil_multiplier: float = 0.85     # 15% less recoil jump per shot
+@export var ads_firerate_multiplier: float = 0.90   # 10% slower fire rate (longer cooldown)
+
+# Base camera FOV — 71° vertical ≈ 103° horizontal at 16:9 (Valorant default)
+const BASE_CAMERA_FOV: float = 71.0
 
 @export_group("sfx")
 @export var firing_sfx: AudioStreamPlayer3D
@@ -101,8 +116,7 @@ var aim_tween: Tween
 @export var recoil_recovery_delay: float = 0.250    # Seconds before recovery begins (250ms)
 @export var recoil_recovery_speed: float = 8.0      # How fast camera returns (higher = faster)
 
-# Recoil multipliers
-@export var recoil_ads_multiplier: float = 0.7      # ADS reduces recoil to this fraction
+# Crouch recoil multiplier (ADS multiplier is in the ADS Math Multipliers group)
 @export var recoil_crouch_multiplier: float = 0.8   # Crouching reduces recoil to this fraction
 
 # ── Recoil Runtime State ─────────────────────────────────────────
@@ -132,7 +146,7 @@ var was_firing: bool = false              # Track firing state for recovery trig
 @export_group("accuracy")
 # Base spread when stationary (degrees) — Vandal = 0.25, Guardian = 0.1
 @export var base_spread_standing: float = 0.25
-@export var base_spread_ads: float = 0.05       # ADS near-perfect accuracy
+@export var base_spread_ads: float = 0.0        # ADS wipes base spread entirely (perfect first shot)
 @export var base_spread_crouch: float = 0.15    # Crouch tighter than standing
 
 # Movement speed thresholds
@@ -146,8 +160,8 @@ var was_firing: bool = false              # Track firing state for recovery trig
 @export var running_error_degrees: float = 5.0    # Running penalty (55%+ speed)
 @export var airborne_error_degrees: float = 10.0  # Airborne = can't aim
 
-# ADS reduces movement penalties by this fraction (0.5 = halved)
-@export var move_error_ads_reduction: float = 0.5
+# NOTE: Movement penalties are NOT reduced by ADS in Valorant.
+# You can't run-and-gun while zoomed — the full penalty applies.
 
 # Per-shot spread increment during sustained fire (bloom)
 # Each bullet adds this to the cone WHILE FIRING
@@ -289,7 +303,8 @@ func activate(current_aim_mode: bool = false) -> void:
         _reset_spread()
 
         if is_aimed:
-                Global.active_camera_fov_changed.emit(focused_aim_fov)
+                var ads_fov = BASE_CAMERA_FOV * ads_fov_multiplier
+                Global.active_camera_fov_changed.emit(ads_fov)
 
 
 func deactivate() -> void:
@@ -358,8 +373,8 @@ func fire_weapon() -> void:
                 recoil_yaw = _get_recoil_yaw()
 
                 if is_aimed:
-                        recoil_pitch *= recoil_ads_multiplier
-                        recoil_yaw *= recoil_ads_multiplier
+                        recoil_pitch *= ads_recoil_multiplier
+                        recoil_yaw *= ads_recoil_multiplier
                 if is_player_crouching:
                         recoil_pitch *= recoil_crouch_multiplier
                         recoil_yaw *= recoil_crouch_multiplier
@@ -439,9 +454,22 @@ func fire_weapon() -> void:
         if not is_melee_weapon:
                 current_bloom = min(current_bloom + firing_error_per_shot, max_spread_degrees)
 
-        # Start cooldown
+        # Start cooldown — ADS slows fire rate (longer interval between shots)
+        # Valorant fire rate math: base_firerate * multiplier = ADS firerate
+        #   base_firerate = 1.0 / cooldown (shots per second)
+        #   ads_firerate  = base_firerate * ads_firerate_multiplier
+        #   ads_cooldown  = 1.0 / ads_firerate
+        # Example: cooldown=0.1s → 10 rps. 10 * 0.90 = 9 rps → 0.1111s cooldown.
+        # This is a strict 10% reduction in shots/sec, NOT an 11% increase in delay.
         can_fire = false
-        cooldown_timer.start(cooldown)
+        var effective_cooldown: float
+        if is_aimed:
+                var base_firerate = 1.0 / cooldown
+                var ads_firerate = base_firerate * ads_firerate_multiplier
+                effective_cooldown = 1.0 / ads_firerate
+        else:
+                effective_cooldown = cooldown
+        cooldown_timer.start(effective_cooldown)
 
         # Camera shake
         Global.camera_shake.emit()
@@ -558,9 +586,10 @@ func calculate_current_spread() -> float:
                 movement_penalty = walking_error_degrees
         # else: STATE: STANDING — below 30%, no movement penalty
 
-        # ADS reduces movement penalties
-        if is_aimed:
-                movement_penalty *= move_error_ads_reduction
+        # NOTE: Movement penalties are NOT reduced by ADS in Valorant.
+        # You can't run-and-gun while zoomed — the full penalty applies.
+        # This is intentional: ADS gives perfect first-shot accuracy (0.0 base)
+        # and reduced recoil, but you still pay the full movement price.
 
         # Crouch reduces movement penalties (separate from base spread)
         if is_player_crouching and not player_airborne:
@@ -731,10 +760,12 @@ func _on_aim_mode_changed(aim_mode: bool) -> void:
                 var target_transform = focused_aim_position.transform if aim_mode else standard_aim_position.transform
                 aim_tween.tween_property(fps_arms_root, "transform", target_transform, AIM_TRANSITION_DURATION)
 
+        # ADS FOV: base_fov * multiplier = zoom (71.0 * 0.80 = 56.8° for Vandal)
         if aim_mode:
-                Global.active_camera_fov_changed.emit(focused_aim_fov)
+                var ads_fov = BASE_CAMERA_FOV * ads_fov_multiplier
+                Global.active_camera_fov_changed.emit(ads_fov)
                 if Global.debug_mode:
-                        print("AIM MODE: ", aim_mode, " - Weapon: ", name, " - FOV: ", focused_aim_fov)
+                        print("AIM MODE: ", aim_mode, " - Weapon: ", name, " - FOV: ", ads_fov, " (", BASE_CAMERA_FOV, " * ", ads_fov_multiplier, ")")
 
 
 # ══════════════════════════════════════════════════════════════════
