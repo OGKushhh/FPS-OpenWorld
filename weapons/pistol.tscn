@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dw2hcpsqkygc2"]
 
 [ext_resource type="PackedScene" uid="uid://dtkna74y7fni" path="res://common/weapon/weapon_base.tscn" id="1_1ohd4"]
+[ext_resource type="PackedScene" uid="uid://lowpoly_pistol01" path="res://resources/weapons_models/pistol_001.glb" id="99_pistol"]
 
 [node name="Pistol" unique_id=1058031305 instance=ExtResource("1_1ohd4")]
 weapon_class = 0
@@ -100,3 +101,5 @@ transform = Transform3D(-0.030354833, 0.92327267, -0.38294378, 0.84556687, 0.228
 transform = Transform3D(0.99999976, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999998, 0, -0.007891081, -0.45480573)
 
 [editable path="fps_demo_arms"]
+[node name="LowPolyPistol" parent="fps_demo_arms/Armature/Skeleton3D/hand_R/pistol" index="1" unique_id=9901010101 instance=ExtResource("99_pistol")]
+transform = Transform3D(0.018, 0, 0, 0, 0.018, 0, 0, 0, 0.018, 0.0, -0.015, 0.0)

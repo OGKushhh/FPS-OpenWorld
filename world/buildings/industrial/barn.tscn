@@ -1,0 +1,35 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://resources/assetsville/Buildings/SM_buildingBarn_01.gltf" id="1_SM_buildingBarn_01"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_fence_107a.gltf" id="2_SM_fence_107a"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_Water_Tank_01.gltf" id="3_SM_Water_Tank_01"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_barrel_1.gltf" id="4_SM_barrel_1"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_barrel_2.gltf" id="5_SM_barrel_2"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_Windmill_01.gltf" id="6_SM_Windmill_01"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_woodenShack_01.gltf" id="7_SM_woodenShack_01"]
+
+[node name="Building" type="Node3D"]
+
+[node name="piece_000_SM_buildingBarn_01" type="Node3D" parent="." unique_id=1592127282 instance=ExtResource("1_SM_buildingBarn_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, 0, 0)
+
+[node name="piece_001_SM_fence_107a" type="Node3D" parent="." unique_id=477450348 instance=ExtResource("2_SM_fence_107a")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 10, 0, 0)
+
+[node name="piece_002_SM_fence_107a" type="Node3D" parent="." unique_id=707958252 instance=ExtResource("2_SM_fence_107a")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 10, 0, 4)
+
+[node name="piece_003_SM_Water_Tank_01" type="Node3D" parent="." unique_id=1107952810 instance=ExtResource("3_SM_Water_Tank_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 12, 0, 3)
+
+[node name="piece_004_SM_barrel_1" type="Node3D" parent="." unique_id=883401070 instance=ExtResource("4_SM_barrel_1")]
+transform = Transform3D(0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.939693, 11, 0, 1)
+
+[node name="piece_005_SM_barrel_2" type="Node3D" parent="." unique_id=1818039531 instance=ExtResource("5_SM_barrel_2")]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 11, 0, 2)
+
+[node name="piece_006_SM_Windmill_01" type="Node3D" parent="." unique_id=1430780822 instance=ExtResource("6_SM_Windmill_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 14, 0, 0)
+
+[node name="piece_007_SM_woodenShack_01" type="Node3D" parent="." unique_id=1053403790 instance=ExtResource("7_SM_woodenShack_01")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 14, 0, 5)

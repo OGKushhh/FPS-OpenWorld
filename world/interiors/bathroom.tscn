@@ -1,0 +1,28 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://resources/furniture/bathroom_item_001.glb" id="1_bathroom_item_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/washing_machine_001.glb" id="2_washing_machine_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/flower_001.glb" id="3_flower_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/lamp_002.glb" id="4_lamp_002"]
+[ext_resource type="PackedScene" path="res://resources/furniture/clothes_001.glb" id="5_clothes_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/toy_001.glb" id="6_toy_001"]
+
+[node name="Interior" type="Node3D"]
+
+[node name="bathroom_item_001_0" type="Node3D" parent="." unique_id=462776746 instance=ExtResource("1_bathroom_item_001")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 0, 0, 1)
+
+[node name="washing_machine_001_1" type="Node3D" parent="." unique_id=69740407 instance=ExtResource("2_washing_machine_001")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 0, 0, 3)
+
+[node name="flower_001_2" type="Node3D" parent="." unique_id=1747625367 instance=ExtResource("3_flower_001")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 2.5, 0, 0.5)
+
+[node name="lamp_002_3" type="Node3D" parent="." unique_id=821352024 instance=ExtResource("4_lamp_002")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 2.5, 0.6, 4)
+
+[node name="clothes_001_4" type="Node3D" parent="." unique_id=1358763699 instance=ExtResource("5_clothes_001")]
+transform = Transform3D(-1.0, 0, 0.0, 0, 1, 0, -0.0, 0, -1.0, 3.5, 0, 2)
+
+[node name="toy_001_5" type="Node3D" parent="." unique_id=1012496494 instance=ExtResource("6_toy_001")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 2, 0, 3.5)

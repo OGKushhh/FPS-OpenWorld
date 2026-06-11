@@ -1,0 +1,88 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_wall_01.gltf" id="1_SM_wall_01"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_wallGarageDoor_01_double.gltf" id="2_SM_wallGarageDoor_01_double"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_wallGarageDoor_01.gltf" id="3_SM_wallGarageDoor_01"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_window_11.gltf" id="4_SM_window_11"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_floor_02.gltf" id="5_SM_floor_02"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_billboard_Warehouse_01.gltf" id="6_SM_billboard_Warehouse_01"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_crate_1_set.gltf" id="7_SM_crate_1_set"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_crate_4_set.gltf" id="8_SM_crate_4_set"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_barrel_2.gltf" id="9_SM_barrel_2"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_barrel_3.gltf" id="10_SM_barrel_3"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_pipesStock_01.gltf" id="11_SM_pipesStock_01"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_chimney_02.gltf" id="12_SM_chimney_02"]
+
+[node name="Building" type="Node3D"]
+
+[node name="piece_000_SM_wall_01" type="Node3D" parent="." unique_id=665839052 instance=ExtResource("1_SM_wall_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, 0, 0)
+
+[node name="piece_001_SM_wall_01" type="Node3D" parent="." unique_id=598322816 instance=ExtResource("1_SM_wall_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 4, 0, 0)
+
+[node name="piece_002_SM_wall_01" type="Node3D" parent="." unique_id=1000038139 instance=ExtResource("1_SM_wall_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 8, 0, 0)
+
+[node name="piece_003_SM_wall_01" type="Node3D" parent="." unique_id=132180937 instance=ExtResource("1_SM_wall_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 12, 0, 0)
+
+[node name="piece_004_SM_wallGarageDoor_01_double" type="Node3D" parent="." unique_id=172105321 instance=ExtResource("2_SM_wallGarageDoor_01_double")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 0, 0, 4)
+
+[node name="piece_005_SM_wallGarageDoor_01" type="Node3D" parent="." unique_id=1136808406 instance=ExtResource("3_SM_wallGarageDoor_01")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 12, 0, 4)
+
+[node name="piece_006_SM_wall_01" type="Node3D" parent="." unique_id=1100535418 instance=ExtResource("1_SM_wall_01")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 4, 0, 4)
+
+[node name="piece_007_SM_wall_01" type="Node3D" parent="." unique_id=1285148659 instance=ExtResource("1_SM_wall_01")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 8, 0, 4)
+
+[node name="piece_008_SM_wall_01" type="Node3D" parent="." unique_id=1761261275 instance=ExtResource("1_SM_wall_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, 4, 0)
+
+[node name="piece_009_SM_wall_01" type="Node3D" parent="." unique_id=1657692468 instance=ExtResource("1_SM_wall_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 4, 4, 0)
+
+[node name="piece_010_SM_wall_01" type="Node3D" parent="." unique_id=367774034 instance=ExtResource("1_SM_wall_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 8, 4, 0)
+
+[node name="piece_011_SM_wall_01" type="Node3D" parent="." unique_id=1753615415 instance=ExtResource("1_SM_wall_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 12, 4, 0)
+
+[node name="piece_012_SM_window_11" type="Node3D" parent="." unique_id=1438618843 instance=ExtResource("4_SM_window_11")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 6, 5.5, 0)
+
+[node name="piece_013_SM_window_11" type="Node3D" parent="." unique_id=80100986 instance=ExtResource("4_SM_window_11")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 10, 5.5, 0)
+
+[node name="piece_014_SM_floor_02" type="Node3D" parent="." unique_id=1579080113 instance=ExtResource("5_SM_floor_02")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, 0, 0)
+
+[node name="piece_015_SM_floor_02" type="Node3D" parent="." unique_id=1622854238 instance=ExtResource("5_SM_floor_02")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 4, 0, 0)
+
+[node name="piece_016_SM_floor_02" type="Node3D" parent="." unique_id=1533312268 instance=ExtResource("5_SM_floor_02")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 8, 0, 0)
+
+[node name="piece_017_SM_billboard_Warehouse_01" type="Node3D" parent="." unique_id=1686219801 instance=ExtResource("6_SM_billboard_Warehouse_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 7, 8.5, 0)
+
+[node name="piece_018_SM_crate_1_set" type="Node3D" parent="." unique_id=1251467304 instance=ExtResource("7_SM_crate_1_set")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 2, 0, 6)
+
+[node name="piece_019_SM_crate_4_set" type="Node3D" parent="." unique_id=859260827 instance=ExtResource("8_SM_crate_4_set")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 10, 0, 6)
+
+[node name="piece_020_SM_barrel_2" type="Node3D" parent="." unique_id=1578757395 instance=ExtResource("9_SM_barrel_2")]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 14, 0, 2)
+
+[node name="piece_021_SM_barrel_3" type="Node3D" parent="." unique_id=1033045152 instance=ExtResource("10_SM_barrel_3")]
+transform = Transform3D(0.5, 0, 0.866025, 0, 1, 0, -0.866025, 0, 0.5, 14, 0, 3)
+
+[node name="piece_022_SM_pipesStock_01" type="Node3D" parent="." unique_id=1073748770 instance=ExtResource("11_SM_pipesStock_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 1, 0, 6)
+
+[node name="piece_023_SM_chimney_02" type="Node3D" parent="." unique_id=157817259 instance=ExtResource("12_SM_chimney_02")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 12, 8, 2)

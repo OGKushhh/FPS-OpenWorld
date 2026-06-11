@@ -1,0 +1,112 @@
+{
+  "asset" : {
+    "generator" : "UE Viewer (umodel) build 1590",
+    "version" : "2.0"
+  },
+  "scene" : 0,
+  "scenes" : [
+    {
+      "nodes" : [ 0 ]
+    }
+  ],
+  "nodes" : [
+    {
+      "name" : "SM_gasPumpsModern",
+      "mesh" : 0
+    }
+  ],
+  "materials" : [
+    {
+      "name" : "dummy_material_0",
+      "pbrMetallicRoughness" : {
+        "baseColorFactor" : [ 0.3, 0.3, 0.3, 1.0 ],
+        "metallicFactor" : 0.1,
+        "roughnessFactor" : 0.5
+      }
+    }
+  ],
+  "meshes" : [
+    {
+      "primitives" : [
+        {
+          "attributes" : {
+            "POSITION" : 1,
+            "NORMAL" : 2,
+            "TANGENT" : 3,
+            "TEXCOORD_0" : 4
+          },
+          "indices" : 0,
+          "material" : 0
+        }
+      ],
+      "name" : "SM_gasPumpsModern"
+    }
+  ],
+  "buffers" : [
+    {
+      "uri" : "SM_gasPumpsModern.bin",
+      "byteLength" : 102900
+    }
+  ],
+  "bufferViews" : [
+    {
+      "buffer" : 0,
+      "byteOffset" : 0,
+      "byteLength" : 4116
+    },
+    {
+      "buffer" : 0,
+      "byteOffset" : 4116,
+      "byteLength" : 24696
+    },
+    {
+      "buffer" : 0,
+      "byteOffset" : 28812,
+      "byteLength" : 24696
+    },
+    {
+      "buffer" : 0,
+      "byteOffset" : 53508,
+      "byteLength" : 32928
+    },
+    {
+      "buffer" : 0,
+      "byteOffset" : 86436,
+      "byteLength" : 16464
+    }
+  ],
+  "accessors" : [
+    {
+      "bufferView" : 0,
+      "componentType" : 5123,
+      "count" : 2058,
+      "type" : "SCALAR"
+    },
+    {
+      "bufferView" : 1,
+      "min" : [ -0.613975, 4.76837e-08, -2.51073 ],
+      "max" : [ 0.613976, 1.43702, 2.51072 ],
+      "componentType" : 5126,
+      "count" : 2058,
+      "type" : "VEC3"
+    },
+    {
+      "bufferView" : 2,
+      "componentType" : 5126,
+      "count" : 2058,
+      "type" : "VEC3"
+    },
+    {
+      "bufferView" : 3,
+      "componentType" : 5126,
+      "count" : 2058,
+      "type" : "VEC4"
+    },
+    {
+      "bufferView" : 4,
+      "componentType" : 5126,
+      "count" : 2058,
+      "type" : "VEC2"
+    }
+  ]
+}

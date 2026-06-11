@@ -1,0 +1,43 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://resources/furniture/training_item_001.glb" id="1_training_item_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/training_item_002.glb" id="2_training_item_002"]
+[ext_resource type="PackedScene" path="res://resources/furniture/dumbbell_001.glb" id="3_dumbbell_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/dumbbell_002.glb" id="4_dumbbell_002"]
+[ext_resource type="PackedScene" path="res://resources/furniture/air_hockey_001.glb" id="5_air_hockey_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/scratching_post_001.glb" id="6_scratching_post_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/lounge_chair_001.glb" id="7_lounge_chair_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/drink_001.glb" id="8_drink_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/toy_002.glb" id="9_toy_002"]
+
+[node name="Interior" type="Node3D"]
+
+[node name="training_item_001_0" type="Node3D" parent="." unique_id=752902470 instance=ExtResource("1_training_item_001")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 1, 0, 1)
+
+[node name="training_item_002_1" type="Node3D" parent="." unique_id=1603597732 instance=ExtResource("2_training_item_002")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 3, 0, 1)
+
+[node name="dumbbell_001_2" type="Node3D" parent="." unique_id=1538229508 instance=ExtResource("3_dumbbell_001")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 1, 0, 4)
+
+[node name="dumbbell_002_3" type="Node3D" parent="." unique_id=621916472 instance=ExtResource("4_dumbbell_002")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 2, 0, 4)
+
+[node name="dumbbell_001_4" type="Node3D" parent="." unique_id=1835272678 instance=ExtResource("3_dumbbell_001")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 3, 0, 4)
+
+[node name="air_hockey_001_5" type="Node3D" parent="." unique_id=424347767 instance=ExtResource("5_air_hockey_001")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 1.5, 0, 6)
+
+[node name="scratching_post_001_6" type="Node3D" parent="." unique_id=173082864 instance=ExtResource("6_scratching_post_001")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 4, 0, 1)
+
+[node name="lounge_chair_001_7" type="Node3D" parent="." unique_id=890719261 instance=ExtResource("7_lounge_chair_001")]
+transform = Transform3D(-1.0, 0, 0.0, 0, 1, 0, -0.0, 0, -1.0, 4, 0, 5)
+
+[node name="drink_001_8" type="Node3D" parent="." unique_id=236903985 instance=ExtResource("8_drink_001")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 3, 0.45, 4.5)
+
+[node name="toy_002_9" type="Node3D" parent="." unique_id=136098606 instance=ExtResource("9_toy_002")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0.5, 0, 6)

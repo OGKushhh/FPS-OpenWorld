@@ -1,0 +1,47 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_shopFront_03.gltf" id="1_SM_shopFront_03"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_shopFront_03a.gltf" id="2_SM_shopFront_03a"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_shopFront_Entrance.gltf" id="3_SM_shopFront_Entrance"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_shopTop_01.gltf" id="4_SM_shopTop_01"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_wall_01.gltf" id="5_SM_wall_01"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_window_04.gltf" id="6_SM_window_04"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_shopCanopy_01.gltf" id="7_SM_shopCanopy_01"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_billboard_Liquor.gltf" id="8_SM_billboard_Liquor"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_trash_bin_big.gltf" id="9_SM_trash_bin_big"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_parking_meter.gltf" id="10_SM_parking_meter"]
+
+[node name="Building" type="Node3D"]
+
+[node name="piece_000_SM_shopFront_03" type="Node3D" parent="." unique_id=482662356 instance=ExtResource("1_SM_shopFront_03")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, 0, 0)
+
+[node name="piece_001_SM_shopFront_03a" type="Node3D" parent="." unique_id=1260714198 instance=ExtResource("2_SM_shopFront_03a")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 4, 0, 0)
+
+[node name="piece_002_SM_shopFront_Entrance" type="Node3D" parent="." unique_id=79606141 instance=ExtResource("3_SM_shopFront_Entrance")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 8, 0, 0)
+
+[node name="piece_003_SM_shopTop_01" type="Node3D" parent="." unique_id=1111094235 instance=ExtResource("4_SM_shopTop_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, 4, 0)
+
+[node name="piece_004_SM_shopTop_01" type="Node3D" parent="." unique_id=294539663 instance=ExtResource("4_SM_shopTop_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 4, 4, 0)
+
+[node name="piece_005_SM_wall_01" type="Node3D" parent="." unique_id=301989874 instance=ExtResource("5_SM_wall_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 8, 4, 0)
+
+[node name="piece_006_SM_window_04" type="Node3D" parent="." unique_id=958879520 instance=ExtResource("6_SM_window_04")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 9, 5.5, 0)
+
+[node name="piece_007_SM_shopCanopy_01" type="Node3D" parent="." unique_id=1158670620 instance=ExtResource("7_SM_shopCanopy_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 4, 3.2, 0)
+
+[node name="piece_008_SM_billboard_Liquor" type="Node3D" parent="." unique_id=1803559519 instance=ExtResource("8_SM_billboard_Liquor")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 5, 9, 0)
+
+[node name="piece_009_SM_trash_bin_big" type="Node3D" parent="." unique_id=560242007 instance=ExtResource("9_SM_trash_bin_big")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 11, 0, -1)
+
+[node name="piece_010_SM_parking_meter" type="Node3D" parent="." unique_id=1919157993 instance=ExtResource("10_SM_parking_meter")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, -1.5, 0, 1)

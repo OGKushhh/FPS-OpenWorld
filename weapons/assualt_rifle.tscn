@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://5r64a43lxupx"]
 
 [ext_resource type="PackedScene" uid="uid://dtkna74y7fni" path="res://common/weapon/weapon_base.tscn" id="1_gx0xw"]
+[ext_resource type="PackedScene" uid="uid://lowpoly_rifle001" path="res://resources/weapons_models/rifle_001.glb" id="99_rifle"]
 
 [node name="AssualtRifle" unique_id=1058031305 instance=ExtResource("1_gx0xw")]
 weapon_class = 2
@@ -105,3 +106,5 @@ transform = Transform3D(0.017932454, 0.8915605, -0.4525462, 0.8455669, 0.2280189
 transform = Transform3D(0.99999976, 0, 0, 0, 0.9999998, 0, 0, 0, 0.9999998, 0, -0.118740916, -1.1621399)
 
 [editable path="fps_demo_arms"]
+[node name="LowPolyRifle" parent="fps_demo_arms/Armature/Skeleton3D/hand_R/rifle" index="1" unique_id=9902020202 instance=ExtResource("99_rifle")]
+transform = Transform3D(0.018, 0, 0, 0, 0.018, 0, 0, 0, 0.018, 0.0, -0.015, 0.0)

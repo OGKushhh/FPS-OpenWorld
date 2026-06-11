@@ -8,6 +8,8 @@
 [ext_resource type="PackedScene" uid="uid://cwnp28v78he3g" path="res://weapons/assualt_burst.tscn" id="6_2ieo8"]
 [ext_resource type="PackedScene" uid="uid://54mnvp5mwdb2" path="res://weapons/lmg.tscn" id="7_ebec5"]
 [ext_resource type="PackedScene" uid="uid://c5cmenins5u2w" path="res://weapons/knife.tscn" id="8_yllr7"]
+[ext_resource type="PackedScene" uid="uid://shotgun0001xx" path="res://weapons/shotgun.tscn" id="9_shotgn"]
+[ext_resource type="PackedScene" uid="uid://sniper00001xx" path="res://weapons/sniper.tscn" id="10_sniper"]
 [ext_resource type="Script" uid="uid://gku3bplish0s" path="res://common/utils/weapon_sub_viewport.gd" id="17_tqiix"]
 [ext_resource type="Script" uid="uid://ceq0fc565dbaa" path="res://common/managers/audio_manager.gd" id="18_x7c3f"]
 [ext_resource type="AudioStream" uid="uid://tohbwu7jgoab" path="res://player/sfx/footstep_ground.ogg" id="19_bjvpn"]
@@ -39,7 +41,7 @@ cull_mask = 1048573
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.7, 0)
 script = ExtResource("3_rgyib")
 follow_speed = 50.0
-weapons_array = [NodePath("Knife"), NodePath("Pistol"), NodePath("AssualtRifle"), NodePath("AssualtBurstRifle"), NodePath("LMG")]
+weapons_array = [NodePath("Knife"), NodePath("Pistol"), NodePath("AssualtRifle"), NodePath("AssualtBurstRifle"), NodePath("LMG"), NodePath("Shotgun"), NodePath("Sniper")]
 
 [node name="RayCastOrigin" type="Node3D" parent="WeaponsManager" unique_id=964028775]
 
@@ -56,6 +58,10 @@ collision_mask = 6
 [node name="AssualtBurstRifle" parent="WeaponsManager" unique_id=13097583 instance=ExtResource("6_2ieo8")]
 
 [node name="LMG" parent="WeaponsManager" unique_id=635718025 instance=ExtResource("7_ebec5")]
+
+[node name="Shotgun" parent="WeaponsManager" unique_id=635718026 instance=ExtResource("9_shotgn")]
+
+[node name="Sniper" parent="WeaponsManager" unique_id=635718027 instance=ExtResource("10_sniper")]
 
 [node name="WeaponSubViewport" type="SubViewportContainer" parent="." unique_id=884807026]
 anchors_preset = 15

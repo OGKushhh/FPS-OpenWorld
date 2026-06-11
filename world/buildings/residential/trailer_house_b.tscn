@@ -1,0 +1,20 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://resources/assetsville/Buildings/SM_buildingTrailerHouse_02.gltf" id="1_SM_buildingTrailerHouse_02"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_fence_101.gltf" id="2_SM_fence_101"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_mailbox_2.gltf" id="3_SM_mailbox_2"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_barrel_1.gltf" id="4_SM_barrel_1"]
+
+[node name="Building" type="Node3D"]
+
+[node name="piece_000_SM_buildingTrailerHouse_02" type="Node3D" parent="." unique_id=862068639 instance=ExtResource("1_SM_buildingTrailerHouse_02")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, 0, 0)
+
+[node name="piece_001_SM_fence_101" type="Node3D" parent="." unique_id=764798290 instance=ExtResource("2_SM_fence_101")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 6, 0, 0)
+
+[node name="piece_002_SM_mailbox_2" type="Node3D" parent="." unique_id=1546905302 instance=ExtResource("3_SM_mailbox_2")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 5, 0, -1)
+
+[node name="piece_003_SM_barrel_1" type="Node3D" parent="." unique_id=1117483615 instance=ExtResource("4_SM_barrel_1")]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 7, 0, 1)

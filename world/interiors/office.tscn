@@ -1,0 +1,39 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://resources/furniture/office_table_001.glb" id="1_office_table_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/kitchen_chair_001.glb" id="2_kitchen_chair_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/closet_001.glb" id="3_closet_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/camera_001.glb" id="4_camera_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/lamp_001.glb" id="5_lamp_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/flower_001.glb" id="6_flower_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/box_001.glb" id="7_box_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/musical_instrument_001.glb" id="8_musical_instrument_001"]
+
+[node name="Interior" type="Node3D"]
+
+[node name="office_table_001_0" type="Node3D" parent="." unique_id=1270412422 instance=ExtResource("1_office_table_001")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 2, 0, 2)
+
+[node name="kitchen_chair_001_1" type="Node3D" parent="." unique_id=1660289378 instance=ExtResource("2_kitchen_chair_001")]
+transform = Transform3D(-1.0, 0, 0.0, 0, 1, 0, -0.0, 0, -1.0, 2, 0, 3.5)
+
+[node name="closet_001_2" type="Node3D" parent="." unique_id=1322884550 instance=ExtResource("3_closet_001")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 0, 0, 1)
+
+[node name="camera_001_3" type="Node3D" parent="." unique_id=144044666 instance=ExtResource("4_camera_001")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 1.5, 0.8, 2)
+
+[node name="lamp_001_4" type="Node3D" parent="." unique_id=501842092 instance=ExtResource("5_lamp_001")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 3, 0.8, 2)
+
+[node name="flower_001_5" type="Node3D" parent="." unique_id=920981553 instance=ExtResource("6_flower_001")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0.5, 0, 5)
+
+[node name="box_001_6" type="Node3D" parent="." unique_id=58941447 instance=ExtResource("7_box_001")]
+transform = Transform3D(0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.939693, 3.5, 0, 5)
+
+[node name="box_001_7" type="Node3D" parent="." unique_id=1359592809 instance=ExtResource("7_box_001")]
+transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, 3.5, 0, 6)
+
+[node name="musical_instrument_001_8" type="Node3D" parent="." unique_id=1292705385 instance=ExtResource("8_musical_instrument_001")]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 3.5, 0, 1)

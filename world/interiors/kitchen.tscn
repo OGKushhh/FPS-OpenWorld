@@ -1,0 +1,46 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://resources/furniture/kitchen_table_001.glb" id="1_kitchen_table_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/kitchen_chair_001.glb" id="2_kitchen_chair_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/kitchen_sink_001.glb" id="3_kitchen_sink_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/fridge_001.glb" id="4_fridge_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/microwave_oven_001.glb" id="5_microwave_oven_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/coffee_machine_001.glb" id="6_coffee_machine_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/dish_001.glb" id="7_dish_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/dish_002.glb" id="8_dish_002"]
+[ext_resource type="PackedScene" path="res://resources/furniture/ketchup_001.glb" id="9_ketchup_001"]
+
+[node name="Interior" type="Node3D"]
+
+[node name="kitchen_table_001_0" type="Node3D" parent="." unique_id=1905649945 instance=ExtResource("1_kitchen_table_001")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 2, 0, 3)
+
+[node name="kitchen_chair_001_1" type="Node3D" parent="." unique_id=1660289378 instance=ExtResource("2_kitchen_chair_001")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 1, 0, 3)
+
+[node name="kitchen_chair_001_2" type="Node3D" parent="." unique_id=1599385473 instance=ExtResource("2_kitchen_chair_001")]
+transform = Transform3D(-0.0, 0, -1.0, 0, 1, 0, 1.0, 0, -0.0, 3, 0, 3)
+
+[node name="kitchen_chair_001_3" type="Node3D" parent="." unique_id=1863113188 instance=ExtResource("2_kitchen_chair_001")]
+transform = Transform3D(-1.0, 0, 0.0, 0, 1, 0, -0.0, 0, -1.0, 2, 0, 1.5)
+
+[node name="kitchen_sink_001_4" type="Node3D" parent="." unique_id=1332339248 instance=ExtResource("3_kitchen_sink_001")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 0, 0, 5)
+
+[node name="fridge_001_5" type="Node3D" parent="." unique_id=598061928 instance=ExtResource("4_fridge_001")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 0, 0, 2)
+
+[node name="microwave_oven_001_6" type="Node3D" parent="." unique_id=546031515 instance=ExtResource("5_microwave_oven_001")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 0, 0.9, 3.5)
+
+[node name="coffee_machine_001_7" type="Node3D" parent="." unique_id=1197049433 instance=ExtResource("6_coffee_machine_001")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 0, 0.9, 4.5)
+
+[node name="dish_001_8" type="Node3D" parent="." unique_id=1201650490 instance=ExtResource("7_dish_001")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 0, 0.9, 5.5)
+
+[node name="dish_002_9" type="Node3D" parent="." unique_id=1954044474 instance=ExtResource("8_dish_002")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 3.5, 0, 0.5)
+
+[node name="ketchup_001_10" type="Node3D" parent="." unique_id=943666597 instance=ExtResource("9_ketchup_001")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 2, 0.8, 3)

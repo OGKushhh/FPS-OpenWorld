@@ -1,0 +1,24 @@
+; Engine configuration file.
+; It's best to edit using the editor UI and not directly,
+; but feel free to use as a reference.
+
+[application]
+
+config/name="SIGNAL"
+config/description="Porto Seco — FPS Prototype"
+run/main_scene="res://world/porto_seco.tscn"
+config/features=PackedStringArray("4.3", "Forward Plus")
+
+[autoload]
+
+Audio="*res://common/autoloads/audio.gd"
+Bullets="*res://common/autoloads/bullets.gd"
+WorldStream="*res://autoloads/world_stream.gd"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/citycrafter/plugin.cfg")
+
+[rendering]
+
+renderer/rendering_method="forward_plus"

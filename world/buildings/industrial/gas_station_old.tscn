@@ -1,0 +1,39 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://resources/assetsville/Buildings/SM_GasStationOld.gltf" id="1_SM_GasStationOld"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_gasPumpsModern.gltf" id="2_SM_gasPumpsModern"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_gasStationCarPort_01.gltf" id="3_SM_gasStationCarPort_01"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_billboard_AutoService.gltf" id="4_SM_billboard_AutoService"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_road_cone.gltf" id="5_SM_road_cone"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_road_block_concrete.gltf" id="6_SM_road_block_concrete"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_gas_can.gltf" id="7_SM_gas_can"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_gas_can_2.gltf" id="8_SM_gas_can_2"]
+
+[node name="Building" type="Node3D"]
+
+[node name="piece_000_SM_GasStationOld" type="Node3D" parent="." unique_id=1970201882 instance=ExtResource("1_SM_GasStationOld")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, 0, 0)
+
+[node name="piece_001_SM_gasPumpsModern" type="Node3D" parent="." unique_id=1776944556 instance=ExtResource("2_SM_gasPumpsModern")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 5, 0, 3)
+
+[node name="piece_002_SM_gasStationCarPort_01" type="Node3D" parent="." unique_id=431447600 instance=ExtResource("3_SM_gasStationCarPort_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 5, 0, 3)
+
+[node name="piece_003_SM_billboard_AutoService" type="Node3D" parent="." unique_id=1811446616 instance=ExtResource("4_SM_billboard_AutoService")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, 0, -6)
+
+[node name="piece_004_SM_road_cone" type="Node3D" parent="." unique_id=1231557960 instance=ExtResource("5_SM_road_cone")]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 3, 0, 6)
+
+[node name="piece_005_SM_road_cone" type="Node3D" parent="." unique_id=1253605091 instance=ExtResource("5_SM_road_cone")]
+transform = Transform3D(0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, 0.707107, 7, 0, 6)
+
+[node name="piece_006_SM_road_block_concrete" type="Node3D" parent="." unique_id=763271154 instance=ExtResource("6_SM_road_block_concrete")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 9, 0, 4)
+
+[node name="piece_007_SM_gas_can" type="Node3D" parent="." unique_id=822583913 instance=ExtResource("7_SM_gas_can")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 8, 0, 1)
+
+[node name="piece_008_SM_gas_can_2" type="Node3D" parent="." unique_id=383846607 instance=ExtResource("8_SM_gas_can_2")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 8, 0, 1.5)

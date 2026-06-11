@@ -1,0 +1,44 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://resources/furniture/bed_001.glb" id="1_bed_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/dresser_001.glb" id="2_dresser_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/closet_001.glb" id="3_closet_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/closet_002.glb" id="4_closet_002"]
+[ext_resource type="PackedScene" path="res://resources/furniture/lamp_001.glb" id="5_lamp_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/lamp_002.glb" id="6_lamp_002"]
+[ext_resource type="PackedScene" path="res://resources/furniture/clothes_001.glb" id="7_clothes_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/clothes_002.glb" id="8_clothes_002"]
+[ext_resource type="PackedScene" path="res://resources/furniture/box_001.glb" id="9_box_001"]
+[ext_resource type="PackedScene" path="res://resources/furniture/flower_001.glb" id="10_flower_001"]
+
+[node name="Interior" type="Node3D"]
+
+[node name="bed_001_0" type="Node3D" parent="." unique_id=1858522639 instance=ExtResource("1_bed_001")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 2, 0, 1)
+
+[node name="dresser_001_1" type="Node3D" parent="." unique_id=1259512923 instance=ExtResource("2_dresser_001")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 0, 0, 1)
+
+[node name="closet_001_2" type="Node3D" parent="." unique_id=1322884550 instance=ExtResource("3_closet_001")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 0, 0, 3)
+
+[node name="closet_002_3" type="Node3D" parent="." unique_id=5812903 instance=ExtResource("4_closet_002")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 0, 0, 5)
+
+[node name="lamp_001_4" type="Node3D" parent="." unique_id=501842092 instance=ExtResource("5_lamp_001")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 2.8, 0.6, 0.5)
+
+[node name="lamp_002_5" type="Node3D" parent="." unique_id=1132367778 instance=ExtResource("6_lamp_002")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 1.2, 0.6, 0.5)
+
+[node name="clothes_001_6" type="Node3D" parent="." unique_id=1619215646 instance=ExtResource("7_clothes_001")]
+transform = Transform3D(-1.0, 0, 0.0, 0, 1, 0, -0.0, 0, -1.0, 3.5, 0, 2)
+
+[node name="clothes_002_7" type="Node3D" parent="." unique_id=941604490 instance=ExtResource("8_clothes_002")]
+transform = Transform3D(-1.0, 0, 0.0, 0, 1, 0, -0.0, 0, -1.0, 3.5, 0, 3.5)
+
+[node name="box_001_8" type="Node3D" parent="." unique_id=1963124316 instance=ExtResource("9_box_001")]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 0.5, 0, 7)
+
+[node name="flower_001_9" type="Node3D" parent="." unique_id=176876800 instance=ExtResource("10_flower_001")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 3.5, 0, 6.5)

@@ -1,0 +1,85 @@
+[gd_resource type="Resource" script_class="CityConfiguration" format=3]
+
+[ext_resource type="Script" path="res://addons/citycrafter/city_configuration.gd" id="1_cfg"]
+
+[ext_resource type="PackedScene" path="res://world/buildings/residential/house_cottage.tscn"    id="2_r1"]
+[ext_resource type="PackedScene" path="res://world/buildings/residential/house_bungalow.tscn"   id="3_r2"]
+[ext_resource type="PackedScene" path="res://world/buildings/residential/trailer_house_a.tscn"  id="4_r3"]
+[ext_resource type="PackedScene" path="res://world/buildings/residential/trailer_house_b.tscn"  id="5_r4"]
+[ext_resource type="PackedScene" path="res://world/buildings/residential/apartment_block.tscn"  id="6_r5"]
+
+[ext_resource type="PackedScene" path="res://world/buildings/commercial/shop_front_a.tscn"      id="7_c1"]
+[ext_resource type="PackedScene" path="res://world/buildings/commercial/shop_front_b.tscn"      id="8_c2"]
+[ext_resource type="PackedScene" path="res://world/buildings/commercial/gas_station.tscn"       id="9_c3"]
+[ext_resource type="PackedScene" path="res://world/buildings/commercial/motel.tscn"             id="10_c4"]
+[ext_resource type="PackedScene" path="res://world/buildings/commercial/pawn_shop.tscn"         id="11_c5"]
+
+[ext_resource type="PackedScene" path="res://world/buildings/industrial/warehouse.tscn"         id="12_i1"]
+[ext_resource type="PackedScene" path="res://world/buildings/industrial/scrapyard_shed.tscn"    id="13_i2"]
+[ext_resource type="PackedScene" path="res://world/buildings/industrial/gas_station_old.tscn"   id="14_i3"]
+[ext_resource type="PackedScene" path="res://world/buildings/industrial/barn.tscn"              id="15_i4"]
+
+[resource]
+script = ExtResource("1_cfg")
+
+grid_width = 8
+grid_height = 8
+block_size = 200.0
+street_width = 25.0
+
+enable_multi_size_blocks = true
+large_block_chance = 0.12
+wide_block_chance = 0.15
+tall_block_chance = 0.10
+enable_edge_extensions = true
+edge_extension_chance = 0.6
+max_edge_extensions = 30
+empty_block_chance = 0.04
+
+district_mode = 1
+residential_ratio = 0.35
+commercial_ratio = 0.40
+industrial_ratio = 0.25
+noise_scale = 0.08
+
+residential_buildings = Array[PackedScene]([
+	ExtResource("2_r1"), ExtResource("3_r2"), ExtResource("4_r3"),
+	ExtResource("5_r4"), ExtResource("6_r5")
+])
+commercial_buildings = Array[PackedScene]([
+	ExtResource("7_c1"), ExtResource("8_c2"), ExtResource("9_c3"),
+	ExtResource("10_c4"), ExtResource("11_c5")
+])
+industrial_buildings = Array[PackedScene]([
+	ExtResource("12_i1"), ExtResource("13_i2"), ExtResource("14_i3"),
+	ExtResource("15_i4")
+])
+
+rotation_mode = 1
+scale_variation = 0.2
+
+enable_residential_subdivisions = true
+subdivision_mode = 1
+subdivision_layout = 0
+subdivision_street_width = 8.0
+residential_buildings_min = 2
+residential_buildings_max = 5
+residential_spacing = 18.0
+residential_border_margin = 12.0
+
+commercial_buildings_min = 4
+commercial_buildings_max = 8
+commercial_spacing = 40.0
+commercial_border_margin = 20.0
+
+industrial_buildings_min = 6
+industrial_buildings_max = 10
+industrial_spacing = 25.0
+industrial_border_margin = 15.0
+
+generate_roads = true
+generate_intersections = true
+intersection_height_offset = 0.01
+generate_subdivision_roads = true
+generate_ground = true
+ground_height_offset = -0.1

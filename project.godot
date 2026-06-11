@@ -23,6 +23,7 @@ config/icon="res://icon.svg"
 
 Global="*res://common/autoloads/global.gd"
 Bullets="*uid://cfvax2ybt3j06"
+WorldStream="*res://autoloads/world_stream.gd"
 
 [display]
 
