@@ -3,10 +3,25 @@
 [ext_resource type="PackedScene" uid="uid://dtkna74y7fni" path="res://common/weapon/weapon_base.tscn" id="1_1ohd4"]
 
 [node name="Pistol" unique_id=1058031305 instance=ExtResource("1_1ohd4")]
+weapon_class = 0
 animation_fire = "pistol_fire"
 animation_reload = "pistol_reload"
+damage = 26.0
+damage_head = 78.0
+damage_body = 26.0
+damage_legs = 22.0
+damage_falloff_start = 30.0
+damage_falloff_end = 50.0
+damage_falloff_min_ratio = 0.58
+penetration_rating = 0
 cooldown = 0.25
+reload_time = 1.75
 mag_capacity = 12
+base_spread_standing = 0.4
+base_spread_crouch = 0.25
+recoil_vertical_pattern = Array[float]([0.25, 0.3, 0.35, 0.3, 0.25])
+firing_error_per_shot = 0.3
+max_spread_degrees = 4.0
 
 [node name="StandardAimPosition" parent="." index="0" unique_id=643753700]
 transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0.15, -0.02, -0.1)

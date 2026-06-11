@@ -54,6 +54,9 @@ signal activate_pressed
 @warning_ignore("unused_signal")
 signal player_crouching_changed(is_crouching: bool)
 
+@warning_ignore("unused_signal")
+signal weapon_wheel_toggled(show: bool)
+
 # weapon_recoil_kick removed — recoil is applied directly via camera references
 
 

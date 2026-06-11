@@ -9,12 +9,12 @@ extends Node3D
 
 # ── Weapon Type Classification ──────────────────────────────────
 enum WeaponClass {
-		SIDEARM,    # Pistols — cheap, backup
-		SMG,        # Close quarters, run-and-gun
-		RIFLE,      # Core precision weapons
-		SHOTGUN,    # Tight angles, pellet spread
-		SNIPER,     # Long range, scope required
-		HEAVY       # LMGs — suppression, wall-bang
+                SIDEARM,    # Pistols — cheap, backup
+                SMG,        # Close quarters, run-and-gun
+                RIFLE,      # Core precision weapons
+                SHOTGUN,    # Tight angles, pellet spread
+                SNIPER,     # Long range, scope required
+                HEAVY       # LMGs — suppression, wall-bang
 }
 
 @export_group("weapon settings")
@@ -219,98 +219,106 @@ enum HitZone { HEAD, BODY, LEGS }
 # ══════════════════════════════════════════════════════════════════
 
 func _ready() -> void:
-		Global.aim_mode_changed.connect(_on_aim_mode_changed)
-		Global.player_crouching_changed.connect(_on_player_crouching_changed)
-		Global.player_sprinting_changed.connect(_on_player_sprinting_changed)
-		Global.player_velocity_changed.connect(_on_player_velocity_changed)
+                Global.aim_mode_changed.connect(_on_aim_mode_changed)
+                Global.player_crouching_changed.connect(_on_player_crouching_changed)
+                Global.player_sprinting_changed.connect(_on_player_sprinting_changed)
+                Global.player_velocity_changed.connect(_on_player_velocity_changed)
 
-		$TestCamera.visible = false
-		$TestTarget.visible = false
+                $TestCamera.visible = false
+                $TestTarget.visible = false
 
-		# Initialize magazine
-		current_mag = mag_capacity
+                # Initialize magazine
+                current_mag = mag_capacity
 
-		# Initialize bloom
-		current_bloom = 0.0
+                # Initialize bloom
+                current_bloom = 0.0
 
 
 func _process(delta: float) -> void:
-		# ── Recoil Recovery ───────────────────────────────────────
-		if is_recovering:
-				recoil_recovery_timer += delta
-				if recoil_recovery_timer >= recoil_recovery_delay:
-						var old_pitch = recoil_accumulated_pitch
-						var old_yaw = recoil_accumulated_yaw
-						# Recovery speed is in degrees/second — stay in degrees for the tracking
-						var recovery_rate = recoil_recovery_speed * delta
-						recoil_accumulated_pitch = move_toward(recoil_accumulated_pitch, 0.0, recovery_rate)
-						recoil_accumulated_yaw = move_toward(recoil_accumulated_yaw, 0.0, recovery_rate)
+                # ── Recoil Recovery ───────────────────────────────────────
+                if is_recovering:
+                                recoil_recovery_timer += delta
+                                if recoil_recovery_timer >= recoil_recovery_delay:
+                                                var old_pitch = recoil_accumulated_pitch
+                                                var old_yaw = recoil_accumulated_yaw
+                                                # Recovery speed is in degrees/second — stay in degrees for the tracking
+                                                var recovery_rate = recoil_recovery_speed * delta
+                                                recoil_accumulated_pitch = move_toward(recoil_accumulated_pitch, 0.0, recovery_rate)
+                                                recoil_accumulated_yaw = move_toward(recoil_accumulated_yaw, 0.0, recovery_rate)
 
-						# Delta is in degrees — convert to radians for camera
-						var pitch_delta = old_pitch - recoil_accumulated_pitch
-						var yaw_delta = old_yaw - recoil_accumulated_yaw
-						_apply_recoil_to_camera(-deg_to_rad(pitch_delta), -deg_to_rad(yaw_delta))
+                                                # Delta is in degrees — convert to radians for camera
+                                                var pitch_delta = old_pitch - recoil_accumulated_pitch
+                                                var yaw_delta = old_yaw - recoil_accumulated_yaw
+                                                _apply_recoil_to_camera(-deg_to_rad(pitch_delta), -deg_to_rad(yaw_delta))
 
-						if abs(recoil_accumulated_pitch) < 0.01 and abs(recoil_accumulated_yaw) < 0.01:
-								recoil_accumulated_pitch = 0.0
-								recoil_accumulated_yaw = 0.0
-								is_recovering = false
+                                                if abs(recoil_accumulated_pitch) < 0.01 and abs(recoil_accumulated_yaw) < 0.01:
+                                                                recoil_accumulated_pitch = 0.0
+                                                                recoil_accumulated_yaw = 0.0
+                                                                is_recovering = false
 
-		# ── Spread Bloom Recovery (Exponential Decay) ────────────
-		# CRITICAL: Bloom only decays when NOT firing.
-		# In Valorant, spread accumulates during a spray and only
-		# recovers after you release the trigger. This is why spraying
-		# creates a visible cone — the bloom stacks up shot after shot.
-		if not is_firing and current_bloom > 0.0:
-				current_bloom *= exp(-recovery_constant * delta)
-				if current_bloom < 0.001:
-						current_bloom = 0.0
+                # ── Spread Bloom Recovery (Exponential Decay) ────────────
+                # CRITICAL: Bloom only decays when NOT firing.
+                # In Valorant, spread accumulates during a spray and only
+                # recovers after you release the trigger. This is why spraying
+                # creates a visible cone — the bloom stacks up shot after shot.
+                if not is_firing and current_bloom > 0.0:
+                                current_bloom *= exp(-recovery_constant * delta)
+                                if current_bloom < 0.001:
+                                                current_bloom = 0.0
 
-		# ── Airborne State Check ──────────────────────────────────
-		if Global.player:
-				player_airborne = not Global.player.is_on_floor()
+                # ── Airborne State Check ──────────────────────────────────
+                if Global.player:
+                                player_airborne = not Global.player.is_on_floor()
 
 
 func initialize(camera: Camera3D, raycast: RayCast3D, raycast_origin: Node3D) -> void:
-		main_camera = camera
-		weapon_ray_cast = raycast
-		self.ray_cast_origin = raycast_origin
+                main_camera = camera
+                weapon_ray_cast = raycast
+                self.ray_cast_origin = raycast_origin
 
-		if Global.player:
-				# Player references are accessed via Global.player directly
-				# (rotation_yaw, rotation_pitch, camera_pivot, camera_holder)
-				pass
+                if Global.player:
+                                # Player references are accessed via Global.player directly
+                                # (rotation_yaw, rotation_pitch, camera_pivot, camera_holder)
+                                pass
 
 
 func activate(current_aim_mode: bool = false) -> void:
-		visible = true
-		can_fire = true
-		is_reloading = false
+                visible = true
+                can_fire = true
+                is_reloading = false
 
-		if aim_tween:
-				aim_tween.kill()
-				aim_tween = null
+                if aim_tween:
+                                aim_tween.kill()
+                                aim_tween = null
 
-		if weapon_ray_cast:
-				weapon_ray_cast.target_position = Vector3(0, 0, -firing_distance)
+                if weapon_ray_cast:
+                                weapon_ray_cast.target_position = Vector3(0, 0, -firing_distance)
 
-		is_aimed = current_aim_mode
-		if fps_arms_root:
-				if is_aimed:
-						fps_arms_root.transform = focused_aim_position.transform
-				else:
-						fps_arms_root.transform = standard_aim_position.transform
+                is_aimed = current_aim_mode
+                if fps_arms_root:
+                                if is_aimed:
+                                                fps_arms_root.transform = focused_aim_position.transform
+                                else:
+                                                fps_arms_root.transform = standard_aim_position.transform
 
-		_reset_recoil()
-		_reset_spread()
+                _reset_recoil()
+                _reset_spread()
 
-		if is_aimed:
-				var ads_fov = BASE_CAMERA_FOV * ads_fov_multiplier
-				Global.active_camera_fov_changed.emit(ads_fov)
+                if is_aimed:
+                                var ads_fov = BASE_CAMERA_FOV * ads_fov_multiplier
+                                Global.active_camera_fov_changed.emit(ads_fov)
 
 
 func deactivate() -> void:
-		visible = false
+                visible = false
+                # Cancel any in-progress reload so state doesn't drift when switching weapons.
+                # Without this the reload_timer keeps running on the hidden weapon and
+                # _on_reload_timer_timeout fires later, corrupting ammo counts.
+                if is_reloading:
+                                reload_timer.stop()
+                                is_reloading = false
+                                if animation_player:
+                                                animation_player.stop()
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -318,196 +326,204 @@ func deactivate() -> void:
 # ══════════════════════════════════════════════════════════════════
 
 func try_fire(is_initial_press: bool = false) -> bool:
-		if is_initial_press:
-				played_empty_sound_this_press = false
+                if is_initial_press:
+                                played_empty_sound_this_press = false
 
-		if not can_fire or is_reloading:
-				return false
+                if not can_fire or is_reloading:
+                                return false
 
-		# Tactical shooter rule: sprinting breaks aim — can't fire while sprinting.
-		# Releasing sprint immediately allows firing (no delay), same as Valorant.
-		if is_player_sprinting:
-				return false
+                # Tactical shooter rule: sprinting breaks aim — can't fire while sprinting.
+                # Releasing sprint immediately allows firing (no delay), same as Valorant.
+                if is_player_sprinting:
+                                return false
 
-		if not is_melee_weapon:
-				if reload_required and current_mag < consume:
-						start_reload()
-						if empty_mag_sfx and not played_empty_sound_this_press:
-								empty_mag_sfx.play()
-								played_empty_sound_this_press = true
-						return false
+                if not is_melee_weapon:
+                                if reload_required and current_mag < consume:
+                                                start_reload()
+                                                if empty_mag_sfx and not played_empty_sound_this_press:
+                                                                empty_mag_sfx.play()
+                                                                played_empty_sound_this_press = true
+                                                return false
 
-				var available_ammo = Bullets._get_ammo(bullet_type)
-				if available_ammo != -1 and available_ammo < consume:
-						if empty_mag_sfx and not played_empty_sound_this_press:
-								empty_mag_sfx.play()
-								played_empty_sound_this_press = true
-						return false
+                                var available_ammo = Bullets._get_ammo(bullet_type)
+                                if available_ammo != -1 and available_ammo < consume:
+                                                if empty_mag_sfx and not played_empty_sound_this_press:
+                                                                empty_mag_sfx.play()
+                                                                played_empty_sound_this_press = true
+                                                return false
 
-		fire_weapon()
-		return true
+                fire_weapon()
+                return true
 
 
 func fire_weapon() -> void:
-		if not is_melee_weapon:
-				if reload_required:
-						current_mag -= consume
-				else:
-						if not Bullets._consume_ammo(bullet_type, consume):
-								return
-				Global.bullets_changed.emit()
+                if not is_melee_weapon:
+                                if reload_required:
+                                                current_mag -= consume
+                                else:
+                                                if not Bullets._consume_ammo(bullet_type, consume):
+                                                                return
+                                Global.bullets_changed.emit()
 
-		if animation_player and animation_fire:
-				animation_player.play(animation_fire)
+                if animation_player and animation_fire:
+                                # Scale animation speed so it always finishes within one cooldown window.
+                                # Without this, fast rifles (cooldown 0.1s) restart the animation every
+                                # shot before it completes, producing a choppy frozen-frame look.
+                                # We clamp the scale so it never plays slower than 0.5x (would look floaty)
+                                # or faster than 3x (would be invisible).
+                                var anim_length = animation_player.get_animation(animation_fire).length if animation_player.has_animation(animation_fire) else cooldown
+                                var speed_scale = clamp(anim_length / max(cooldown, 0.001), 0.5, 3.0)
+                                animation_player.play(animation_fire, -1, speed_scale)
 
-		if firing_sfx:
-				firing_sfx.play()
+                if firing_sfx:
+                                firing_sfx.play()
 
-		# Muzzle flash VFX (ranged weapons only)
-		if not is_melee_weapon and firing_vfx and muzzle_flash_position:
-				var muzzle_instance = firing_vfx.instantiate()
-				muzzle_flash_position.add_child(muzzle_instance)
+                # Muzzle flash VFX (ranged weapons only)
+                if not is_melee_weapon and firing_vfx and muzzle_flash_position:
+                                var muzzle_instance = firing_vfx.instantiate()
+                                muzzle_flash_position.add_child(muzzle_instance)
 
-		# ── Calculate Recoil Offsets ──────────────────────────────
-		var recoil_pitch: float = 0.0
-		var recoil_yaw: float = 0.0
+                # ── Calculate Recoil Offsets ──────────────────────────────
+                var recoil_pitch: float = 0.0
+                var recoil_yaw: float = 0.0
 
-		if not is_melee_weapon:
-				# Mark as firing — bloom will NOT decay while this is true
-				is_firing = true
+                if not is_melee_weapon:
+                                # Mark as firing — bloom will NOT decay while this is true
+                                is_firing = true
 
-				# Cache raw degree values ONCE so the accumulator and the
-				# camera application use identical numbers. Calling
-				# _get_recoil_yaw() twice was returning two different
-				# randf_range() results — camera moved by one value but
-				# recovery tried to undo a different one.
-				var raw_pitch_deg: float = _get_recoil_pitch()
-				var raw_yaw_deg: float = _get_recoil_yaw()
+                                # Cache raw degree values ONCE so the accumulator and the
+                                # camera application use identical numbers. Calling
+                                # _get_recoil_yaw() twice was returning two different
+                                # randf_range() results — camera moved by one value but
+                                # recovery tried to undo a different one.
+                                var raw_pitch_deg: float = _get_recoil_pitch()
+                                var raw_yaw_deg: float = _get_recoil_yaw()
 
-				# Convert to radians for camera, then apply multipliers
-				recoil_pitch = deg_to_rad(raw_pitch_deg)
-				recoil_yaw = deg_to_rad(raw_yaw_deg)
+                                # Convert to radians for camera, then apply multipliers
+                                recoil_pitch = deg_to_rad(raw_pitch_deg)
+                                recoil_yaw = deg_to_rad(raw_yaw_deg)
 
-				if is_aimed:
-						recoil_pitch *= ads_recoil_multiplier
-						recoil_yaw *= ads_recoil_multiplier
-				if is_player_crouching:
-						recoil_pitch *= recoil_crouch_multiplier
-						recoil_yaw *= recoil_crouch_multiplier
+                                if is_aimed:
+                                                recoil_pitch *= ads_recoil_multiplier
+                                                recoil_yaw *= ads_recoil_multiplier
+                                if is_player_crouching:
+                                                recoil_pitch *= recoil_crouch_multiplier
+                                                recoil_yaw *= recoil_crouch_multiplier
 
-				# Track the same multiplied magnitude (converted back to degrees)
-				# so recovery undoes exactly what was applied — no overshoot.
-				recoil_accumulated_pitch += rad_to_deg(recoil_pitch)
-				recoil_accumulated_yaw += rad_to_deg(recoil_yaw)
+                                # Track the same multiplied magnitude (converted back to degrees)
+                                # so recovery undoes exactly what was applied — no overshoot.
+                                recoil_accumulated_pitch += rad_to_deg(recoil_pitch)
+                                recoil_accumulated_yaw += rad_to_deg(recoil_yaw)
 
-				# Apply in radians to rotation accumulators
-				_apply_recoil_to_camera(recoil_pitch, recoil_yaw)
+                                # Apply in radians to rotation accumulators
+                                _apply_recoil_to_camera(recoil_pitch, recoil_yaw)
 
-				is_recovering = false
-				recoil_recovery_timer = 0.0
-				was_firing = true
+                                is_recovering = false
+                                recoil_recovery_timer = 0.0
+                                was_firing = true
 
-				bullets_fired_in_spray += 1
+                                bullets_fired_in_spray += 1
 
-		# ── Calculate Total Spread for This Shot ──────────────────
-		var total_spread: float = calculate_current_spread()
+                # ── Calculate Total Spread for This Shot ──────────────────
+                var total_spread: float = calculate_current_spread()
 
-		# ── Perform Hitscan with Circular Cone Distribution ───────
-		if weapon_ray_cast and ray_cast_origin and main_camera:
-				# Circular cone spread using polar coordinates
-				# tan(spread_rad) maps the angle onto a unit disk,
-				# then random polar angle + radius gives uniform distribution
-				var shoot_direction = _calculate_spread_direction(total_spread)
+                # ── Perform Hitscan with Circular Cone Distribution ───────
+                if weapon_ray_cast and ray_cast_origin and main_camera:
+                                # Circular cone spread using polar coordinates
+                                # tan(spread_rad) maps the angle onto a unit disk,
+                                # then random polar angle + radius gives uniform distribution
+                                var shoot_direction = _calculate_spread_direction(total_spread)
 
-				# Use direct space state raycast instead of rotated RayCast3D node
-				# This avoids the square distribution problem entirely
-				var space_state = get_world_3d().direct_space_state
-				var ray_start = main_camera.global_position
-				var ray_end = ray_start + shoot_direction * firing_distance
+                                # Use direct space state raycast instead of rotated RayCast3D node
+                                # This avoids the square distribution problem entirely
+                                var space_state = get_world_3d().direct_space_state
+                                var ray_start = main_camera.global_position
+                                var ray_end = ray_start + shoot_direction * firing_distance
 
-				var query = PhysicsRayQueryParameters3D.create(ray_start, ray_end)
-				# Exclude player collision
-				if Global.player:
-						query.exclude = [Global.player.get_rid()]
+                                var query = PhysicsRayQueryParameters3D.create(ray_start, ray_end)
+                                # Exclude player collision
+                                if Global.player:
+                                                query.exclude = [Global.player.get_rid()]
 
-				var result = space_state.intersect_ray(query)
+                                var result = space_state.intersect_ray(query)
 
-				# For tracer: direction from muzzle toward the hit point or max range
-				var bullet_dir = shoot_direction
-				var tracer_start: Vector3 = muzzle_flash_position.global_position if muzzle_flash_position else ray_cast_origin.global_position
-				var tracer_end: Vector3
+                                # For tracer: direction from muzzle toward the hit point or max range
+                                var bullet_dir = shoot_direction
+                                var tracer_start: Vector3 = muzzle_flash_position.global_position if muzzle_flash_position else ray_cast_origin.global_position
+                                var tracer_end: Vector3
 
-				if result:
-						var hit_point = result.position
-						var hit_normal = result.normal if result.has("normal") else Vector3.UP
-						var collider = result.collider
-						tracer_end = hit_point
+                                if result:
+                                                var hit_point = result.position
+                                                var hit_normal = result.normal if result.has("normal") else Vector3.UP
+                                                var collider = result.collider
+                                                tracer_end = hit_point
 
-						# Bullet decal
-						if not is_melee_weapon and bullet_decal:
-								var decal_instance = bullet_decal.instantiate()
-								get_tree().root.add_child(decal_instance)
-								decal_instance.global_position = hit_point
-								var up_vector = Vector3.UP
-								if abs(hit_normal.dot(Vector3.UP)) > 0.99:
-										up_vector = Vector3.FORWARD
-								decal_instance.look_at(hit_point + hit_normal, up_vector)
+                                                # Bullet decal
+                                                if not is_melee_weapon and bullet_decal:
+                                                                var decal_instance = bullet_decal.instantiate()
+                                                                get_tree().root.add_child(decal_instance)
+                                                                decal_instance.global_position = hit_point
+                                                                var up_vector = Vector3.UP
+                                                                if abs(hit_normal.dot(Vector3.UP)) > 0.99:
+                                                                                up_vector = Vector3.FORWARD
+                                                                decal_instance.look_at(hit_point + hit_normal, up_vector)
 
-						# Damage — pass hit_point so targets can detect hit zones
-						if collider and collider.has_method("get_damage"):
-								var direction = (hit_point - global_position).normalized()
-								var distance = global_position.distance_to(hit_point)
-								var final_damage = _calculate_damage(distance, HitZone.BODY)
-								# Pass hit_point as 3rd argument — targets use it
-								# for hit zone detection (head/body/legs).
-								# Old enemies ignore the extra parameter (default).
-								collider.get_damage(final_damage, direction, hit_point)
-				else:
-						# Miss — tracer goes to max distance
-						tracer_end = tracer_start + bullet_dir * firing_distance
+                                                # Damage — determine hit zone from hit_point Y,
+                                                # calculate per-zone damage with falloff, then pass
+                                                # the final damage to the target.
+                                                if collider and collider.has_method("get_damage"):
+                                                                var direction = (hit_point - global_position).normalized()
+                                                                var distance = global_position.distance_to(hit_point)
+                                                                # Determine hit zone from local Y of hit point
+                                                                var hit_zone = _determine_hit_zone(collider, hit_point)
+                                                                var final_damage = _calculate_damage(distance, hit_zone)
+                                                                collider.get_damage(final_damage, direction, hit_point)
+                                else:
+                                                # Miss — tracer goes to max distance
+                                                tracer_end = tracer_start + bullet_dir * firing_distance
 
-				# Spawn bullet tracer
-				if not is_melee_weapon and tracer_enabled:
-						_spawn_tracer(tracer_start, tracer_end)
+                                # Spawn bullet tracer
+                                if not is_melee_weapon and tracer_enabled:
+                                                _spawn_tracer(tracer_start, tracer_end)
 
-		# ── Increase Bloom Per Shot ───────────────────────────────
-		# Each bullet adds firing_error_per_shot degrees to the cone, clamped to max
-		if not is_melee_weapon:
-				current_bloom = min(current_bloom + firing_error_per_shot, max_spread_degrees)
+                # ── Increase Bloom Per Shot ───────────────────────────────
+                # Each bullet adds firing_error_per_shot degrees to the cone, clamped to max
+                if not is_melee_weapon:
+                                current_bloom = min(current_bloom + firing_error_per_shot, max_spread_degrees)
 
-		# Start cooldown — ADS slows fire rate (longer interval between shots)
-		# Valorant fire rate math: base_firerate * multiplier = ADS firerate
-		#   base_firerate = 1.0 / cooldown (shots per second)
-		#   ads_firerate  = base_firerate * ads_firerate_multiplier
-		#   ads_cooldown  = 1.0 / ads_firerate
-		# Example: cooldown=0.1s → 10 rps. 10 * 0.90 = 9 rps → 0.1111s cooldown.
-		# This is a strict 10% reduction in shots/sec, NOT an 11% increase in delay.
-		can_fire = false
-		var effective_cooldown: float
-		if is_aimed:
-				var base_firerate = 1.0 / cooldown
-				var ads_firerate = base_firerate * ads_firerate_multiplier
-				effective_cooldown = 1.0 / ads_firerate
-		else:
-				effective_cooldown = cooldown
-		cooldown_timer.start(effective_cooldown)
+                # Start cooldown — ADS slows fire rate (longer interval between shots)
+                # Valorant fire rate math: base_firerate * multiplier = ADS firerate
+                #   base_firerate = 1.0 / cooldown (shots per second)
+                #   ads_firerate  = base_firerate * ads_firerate_multiplier
+                #   ads_cooldown  = 1.0 / ads_firerate
+                # Example: cooldown=0.1s → 10 rps. 10 * 0.90 = 9 rps → 0.1111s cooldown.
+                # This is a strict 10% reduction in shots/sec, NOT an 11% increase in delay.
+                can_fire = false
+                var effective_cooldown: float
+                if is_aimed:
+                                var base_firerate = 1.0 / cooldown
+                                var ads_firerate = base_firerate * ads_firerate_multiplier
+                                effective_cooldown = 1.0 / ads_firerate
+                else:
+                                effective_cooldown = cooldown
+                cooldown_timer.start(effective_cooldown)
 
-		# Camera shake
-		Global.camera_shake.emit()
+                # Camera shake
+                Global.camera_shake.emit()
 
 
 func _on_cooldown_timer_timeout() -> void:
-		can_fire = true
+                can_fire = true
 
-		if not Input.is_action_pressed("fire"):
-				# Authoritative fire-release path. The velocity signal in
-				# _on_player_velocity_changed() only fires when the player
-				# moves — if they stand still and release the trigger,
-				# that signal never re-fires and is_firing stays true,
-				# blocking bloom decay forever. Clearing it here covers
-				# that case: every cooldown tick we check input directly.
-				is_firing = false
-				_begin_recoil_recovery()
+                if not Input.is_action_pressed("fire"):
+                                # Authoritative fire-release path. The velocity signal in
+                                # _on_player_velocity_changed() only fires when the player
+                                # moves — if they stand still and release the trigger,
+                                # that signal never re-fires and is_firing stays true,
+                                # blocking bloom decay forever. Clearing it here covers
+                                # that case: every cooldown tick we check input directly.
+                                is_firing = false
+                                _begin_recoil_recovery()
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -515,87 +531,87 @@ func _on_cooldown_timer_timeout() -> void:
 # ══════════════════════════════════════════════════════════════════
 
 func _get_recoil_pitch() -> float:
-		var pattern_size = recoil_vertical_pattern.size()
+                var pattern_size = recoil_vertical_pattern.size()
 
-		if bullets_fired_in_spray < pattern_size:
-				return recoil_vertical_pattern[bullets_fired_in_spray]
-		else:
-				return recoil_vertical_sustain
+                if bullets_fired_in_spray < pattern_size:
+                                return recoil_vertical_pattern[bullets_fired_in_spray]
+                else:
+                                return recoil_vertical_sustain
 
 
 func _get_recoil_yaw() -> float:
-		var pattern_size = recoil_vertical_pattern.size()
+                var pattern_size = recoil_vertical_pattern.size()
 
-		if bullets_fired_in_spray < pattern_size:
-				return randf_range(-0.05, 0.05)
+                if bullets_fired_in_spray < pattern_size:
+                                return randf_range(-0.05, 0.05)
 
-		if sway_bullets_remaining <= 0:
-				current_sway_direction = 1.0 if randf() > 0.5 else -1.0
-				sway_bullets_remaining = recoil_sway_burst_length + randi_range(-1, 1)
+                if sway_bullets_remaining <= 0:
+                                current_sway_direction = 1.0 if randf() > 0.5 else -1.0
+                                sway_bullets_remaining = recoil_sway_burst_length + randi_range(-1, 1)
 
-		sway_bullets_remaining -= 1
+                sway_bullets_remaining -= 1
 
-		var yaw_offset = current_sway_direction * randf_range(recoil_horizontal_max * 0.3, recoil_horizontal_max)
-		return yaw_offset
+                var yaw_offset = current_sway_direction * randf_range(recoil_horizontal_max * 0.3, recoil_horizontal_max)
+                return yaw_offset
 
 
 func _apply_recoil_to_camera(pitch_offset: float, yaw_offset: float) -> void:
-		# Recoil must go through the player's rotation accumulators,
-		# NOT directly to camera nodes. Since player.gd now uses
-		# absolute assignment (rotation.y = rotation_yaw) instead of
-		# incremental rotate_y(), any direct rotate_x/y here would be
-		# overwritten on the next mouse move.
-		#
-		# By modifying the accumulators, mouse look and recoil share
-		# the same precision pipeline with zero conflict.
-		#
-		# SIGN CONVENTION (Godot coordinate system):
-		#   rotation.x POSITIVE = looking UP   (forward -Z rotates toward +Y)
-		#   rotation.x NEGATIVE = looking DOWN (forward -Z rotates toward -Y)
-		#   rotation.y NEGATIVE = looking RIGHT (forward -Z rotates toward +X)
-		#   rotation.y POSITIVE = looking LEFT  (forward -Z rotates toward -X)
-		#
-		# Therefore:
-		#   pitch_offset positive (recoil kicks UP) → rotation_pitch += positive → looks UP ✓
-		#   yaw_offset positive (recoil kicks RIGHT) → rotation_yaw -= positive → looks RIGHT ✓
-		if not Global.player:
-				return
+                # Recoil must go through the player's rotation accumulators,
+                # NOT directly to camera nodes. Since player.gd now uses
+                # absolute assignment (rotation.y = rotation_yaw) instead of
+                # incremental rotate_y(), any direct rotate_x/y here would be
+                # overwritten on the next mouse move.
+                #
+                # By modifying the accumulators, mouse look and recoil share
+                # the same precision pipeline with zero conflict.
+                #
+                # SIGN CONVENTION (Godot coordinate system):
+                #   rotation.x POSITIVE = looking UP   (forward -Z rotates toward +Y)
+                #   rotation.x NEGATIVE = looking DOWN (forward -Z rotates toward -Y)
+                #   rotation.y NEGATIVE = looking RIGHT (forward -Z rotates toward +X)
+                #   rotation.y POSITIVE = looking LEFT  (forward -Z rotates toward -X)
+                #
+                # Therefore:
+                #   pitch_offset positive (recoil kicks UP) → rotation_pitch += positive → looks UP ✓
+                #   yaw_offset positive (recoil kicks RIGHT) → rotation_yaw -= positive → looks RIGHT ✓
+                if not Global.player:
+                                return
 
-		Global.player.rotation_pitch += pitch_offset
-		Global.player.rotation_yaw -= yaw_offset
+                Global.player.rotation_pitch += pitch_offset
+                Global.player.rotation_yaw -= yaw_offset
 
-		# Clamp pitch through the accumulator to prevent flipping
-		Global.player.rotation_pitch = clamp(
-				Global.player.rotation_pitch,
-				-Global.player.PITCH_LIMIT,
-				Global.player.PITCH_LIMIT
-		)
+                # Clamp pitch through the accumulator to prevent flipping
+                Global.player.rotation_pitch = clamp(
+                                Global.player.rotation_pitch,
+                                -Global.player.PITCH_LIMIT,
+                                Global.player.PITCH_LIMIT
+                )
 
-		# NOTE: Do NOT set camera node rotations here.
-		# player.gd's _input() is the single source of truth for camera
-		# rotation. It applies: rotation_pitch + shake_pitch → camera.
-		# If we set camera nodes here, it creates a race condition where
-		# mouse look overwrites recoil on the next frame.
+                # NOTE: Do NOT set camera node rotations here.
+                # player.gd's _input() is the single source of truth for camera
+                # rotation. It applies: rotation_pitch + shake_pitch → camera.
+                # If we set camera nodes here, it creates a race condition where
+                # mouse look overwrites recoil on the next frame.
 
 
 func _begin_recoil_recovery() -> void:
-		bullets_fired_in_spray = 0
-		if abs(recoil_accumulated_pitch) > 0.01 or abs(recoil_accumulated_yaw) > 0.01:
-				is_recovering = true
-				recoil_recovery_timer = 0.0
-		was_firing = false
+                bullets_fired_in_spray = 0
+                if abs(recoil_accumulated_pitch) > 0.01 or abs(recoil_accumulated_yaw) > 0.01:
+                                is_recovering = true
+                                recoil_recovery_timer = 0.0
+                was_firing = false
 
 
 func _reset_recoil() -> void:
-		recoil_accumulated_pitch = 0.0
-		recoil_accumulated_yaw = 0.0
-		bullets_fired_in_spray = 0
-		sway_bullets_remaining = 0
-		current_sway_direction = 1.0
-		is_recovering = false
-		recoil_recovery_timer = 0.0
-		was_firing = false
-		is_firing = false
+                recoil_accumulated_pitch = 0.0
+                recoil_accumulated_yaw = 0.0
+                bullets_fired_in_spray = 0
+                sway_bullets_remaining = 0
+                current_sway_direction = 1.0
+                is_recovering = false
+                recoil_recovery_timer = 0.0
+                was_firing = false
+                is_firing = false
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -603,120 +619,138 @@ func _reset_recoil() -> void:
 # ══════════════════════════════════════════════════════════════════
 
 func _get_base_spread() -> float:
-		# Base first-shot error depends on stance
-		if is_aimed:
-				return base_spread_ads
-		if is_player_crouching and not player_airborne:
-				return base_spread_crouch
-		return base_spread_standing
+                # Base first-shot error depends on stance
+                if is_aimed:
+                                return base_spread_ads
+                if is_player_crouching and not player_airborne:
+                                return base_spread_crouch
+                return base_spread_standing
 
 
 func calculate_current_spread() -> float:
-		# Valorant state-based threshold system:
-		#   Standing (0-30% speed):  base only
-		#   Walking  (30-55% speed): base + walking_error
-		#   Running  (55%+ speed):   base + running_error
-		#   Airborne:                base + airborne_error
-		# Bloom from sustained fire is added on top of everything.
-		# This creates the instant accuracy drop on counter-strafe —
-		# the moment velocity drops below 30%, penalty goes to zero.
+                # Valorant state-based threshold system:
+                #   Standing (0-30% speed):  base only
+                #   Walking  (30-55% speed): base + walking_error
+                #   Running  (55%+ speed):   base + running_error
+                #   Airborne:                base + airborne_error
+                # Bloom from sustained fire is added on top of everything.
+                # This creates the instant accuracy drop on counter-strafe —
+                # the moment velocity drops below 30%, penalty goes to zero.
 
-		var base: float = _get_base_spread()
+                var base: float = _get_base_spread()
 
-		# Calculate speed as percentage of max run speed
-		var speed_percentage = player_horizontal_velocity / max_run_speed
+                # Calculate speed as percentage of max run speed
+                var speed_percentage = player_horizontal_velocity / max_run_speed
 
-		# State-based movement penalty (flat values per state)
-		var movement_penalty: float = 0.0
+                # State-based movement penalty (flat values per state)
+                var movement_penalty: float = 0.0
 
-		if player_airborne:
-				# STATE: AIRBORNE — massive penalty regardless of speed
-				movement_penalty = airborne_error_degrees
-		elif speed_percentage > walk_threshold_ratio:
-				# STATE: RUNNING — above 55% of max speed
-				movement_penalty = running_error_degrees
-		elif speed_percentage > velocity_deadzone_ratio:
-				# STATE: WALKING — between 30% and 55% of max speed
-				movement_penalty = walking_error_degrees
-		# else: STATE: STANDING — below 30%, no movement penalty
+                if player_airborne:
+                                # STATE: AIRBORNE — massive penalty regardless of speed
+                                movement_penalty = airborne_error_degrees
+                elif speed_percentage > walk_threshold_ratio:
+                                # STATE: RUNNING — above 55% of max speed
+                                movement_penalty = running_error_degrees
+                elif speed_percentage > velocity_deadzone_ratio:
+                                # STATE: WALKING — between 30% and 55% of max speed
+                                movement_penalty = walking_error_degrees
+                # else: STATE: STANDING — below 30%, no movement penalty
 
-		# NOTE: Movement penalties are NOT reduced by ADS in Valorant.
-		# You can't run-and-gun while zoomed — the full penalty applies.
-		# This is intentional: ADS gives perfect first-shot accuracy (0.0 base)
-		# and reduced recoil, but you still pay the full movement price.
+                # NOTE: Movement penalties are NOT reduced by ADS in Valorant.
+                # You can't run-and-gun while zoomed — the full penalty applies.
+                # This is intentional: ADS gives perfect first-shot accuracy (0.0 base)
+                # and reduced recoil, but you still pay the full movement price.
 
-		# Crouch reduces movement penalties (separate from base spread)
-		if is_player_crouching and not player_airborne:
-				movement_penalty *= 0.6
+                # Crouch reduces movement penalties (separate from base spread)
+                if is_player_crouching and not player_airborne:
+                                movement_penalty *= 0.6
 
-		# Total = base + movement_penalty + bloom
-		var total_spread = base + movement_penalty + current_bloom
+                # Total = base + movement_penalty + bloom
+                var total_spread = base + movement_penalty + current_bloom
 
-		return clamp(total_spread, 0.0, max_spread_degrees)
+                return clamp(total_spread, 0.0, max_spread_degrees)
 
 
 func _calculate_spread_direction(spread_degrees: float) -> Vector3:
-		# Circular cone distribution using polar coordinates
-		# This replaces the old square randf_range(-spread, spread) on X and Y
-		# which created a square hit distribution instead of circular
-		#
-		# Math: Project spread angle onto a unit disk using tan(spread_rad),
-		# then pick a random point on that disk via polar coordinates.
-		# This gives uniform distribution within the cone, matching Valorant.
+                # Circular cone distribution using polar coordinates
+                # This replaces the old square randf_range(-spread, spread) on X and Y
+                # which created a square hit distribution instead of circular
+                #
+                # Math: Project spread angle onto a unit disk using tan(spread_rad),
+                # then pick a random point on that disk via polar coordinates.
+                # This gives uniform distribution within the cone, matching Valorant.
 
-		var camera = main_camera
-		if not camera:
-				camera = get_viewport().get_camera_3d()
-		if not camera:
-				return -global_transform.basis.z
+                var camera = main_camera
+                if not camera:
+                                camera = get_viewport().get_camera_3d()
+                if not camera:
+                                return -global_transform.basis.z
 
-		var forward = -camera.global_transform.basis.z  # -Z is forward in Godot
-		var spread_rad = deg_to_rad(spread_degrees)
+                var forward = -camera.global_transform.basis.z  # -Z is forward in Godot
+                var spread_rad = deg_to_rad(spread_degrees)
 
-		# Random point on a disk of radius tan(spread_rad).
-		# sqrt(randf()) corrects for disk area: without it, randf_range(0, r)
-		# produces more samples near the center because small radii cover
-		# proportionally less area. sqrt maps the linear sample onto the
-		# correct area-weighted distribution — shots spread evenly across
-		# the full cone instead of clustering at the crosshair.
-		var rand_radius = tan(spread_rad) * sqrt(randf())
-		var rand_angle = randf_range(0.0, 2.0 * PI)
+                # Random point on a disk of radius tan(spread_rad).
+                # sqrt(randf()) corrects for disk area: without it, randf_range(0, r)
+                # produces more samples near the center because small radii cover
+                # proportionally less area. sqrt maps the linear sample onto the
+                # correct area-weighted distribution — shots spread evenly across
+                # the full cone instead of clustering at the crosshair.
+                var rand_radius = tan(spread_rad) * sqrt(randf())
+                var rand_angle = randf_range(0.0, 2.0 * PI)
 
-		var right = camera.global_transform.basis.x
-		var up = camera.global_transform.basis.y
+                var right = camera.global_transform.basis.x
+                var up = camera.global_transform.basis.y
 
-		# Displace the forward direction by the random disk offset
-		var displacement = (right * cos(rand_angle) + up * sin(rand_angle)) * rand_radius
-		return (forward + displacement).normalized()
+                # Displace the forward direction by the random disk offset
+                var displacement = (right * cos(rand_angle) + up * sin(rand_angle)) * rand_radius
+                return (forward + displacement).normalized()
 
 
 func _reset_spread() -> void:
-		current_bloom = 0.0
+                current_bloom = 0.0
 
 
 # ══════════════════════════════════════════════════════════════════
 # DAMAGE CALCULATION — Per Hit Zone + Distance Falloff
 # ══════════════════════════════════════════════════════════════════
 
+func _determine_hit_zone(collider: Object, hit_point: Vector3) -> HitZone:
+        # Determine hit zone from the hit_point's local Y coordinate.
+        # If the collider is a MovingTarget or enemy with its own hit zone
+        # system, defer to their detection (they'll re-check in get_damage).
+        # For generic colliders (barrels, world props), default to BODY.
+        #
+        # Humanoid thresholds (1.8m total height):
+        #   HEAD: local Y > 1.5m
+        #   BODY: 0.8m ≤ local Y ≤ 1.5m
+        #   LEGS: local Y < 0.8m
+        var local_y = collider.to_local(hit_point).y
+        if local_y > 1.5:
+                return HitZone.HEAD
+        elif local_y >= 0.8:
+                return HitZone.BODY
+        else:
+                return HitZone.LEGS
+
 func _calculate_damage(distance: float, hit_zone: HitZone = HitZone.BODY) -> float:
-		# Pick base damage by hit zone (Valorant: head 160, body 40, legs 33)
-		var base_damage: float
-		match hit_zone:
-				HitZone.HEAD:
-						base_damage = damage_head
-				HitZone.LEGS:
-						base_damage = damage_legs
-				HitZone.BODY:
-						base_damage = damage_body
+                # Pick base damage by hit zone (Valorant: head 160, body 40, legs 33)
+                var base_damage: float
+                match hit_zone:
+                                HitZone.HEAD:
+                                                base_damage = damage_head
+                                HitZone.LEGS:
+                                                base_damage = damage_legs
+                                HitZone.BODY:
+                                                base_damage = damage_body
 
-		# Distance falloff
-		if distance > damage_falloff_start:
-				var falloff_range = damage_falloff_end - damage_falloff_start
-				var falloff_t = clamp((distance - damage_falloff_start) / falloff_range, 0.0, 1.0)
-				var min_damage = base_damage * damage_falloff_min_ratio
-				base_damage = lerpf(base_damage, min_damage, falloff_t)
+                # Distance falloff
+                if distance > damage_falloff_start:
+                                var falloff_range = damage_falloff_end - damage_falloff_start
+                                var falloff_t = clamp((distance - damage_falloff_start) / falloff_range, 0.0, 1.0)
+                                var min_damage = base_damage * damage_falloff_min_ratio
+                                base_damage = lerpf(base_damage, min_damage, falloff_t)
 
-		return base_damage
+                return base_damage
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -724,38 +758,38 @@ func _calculate_damage(distance: float, hit_zone: HitZone = HitZone.BODY) -> flo
 # ══════════════════════════════════════════════════════════════════
 
 func start_reload() -> void:
-		if is_reloading or not reload_required:
-				return
+                if is_reloading or not reload_required:
+                                return
 
-		var available_ammo = Bullets._get_ammo(bullet_type)
-		if available_ammo <= 0 and available_ammo != -1:
-				return
+                var available_ammo = Bullets._get_ammo(bullet_type)
+                if available_ammo <= 0 and available_ammo != -1:
+                                return
 
-		is_reloading = true
+                is_reloading = true
 
-		if animation_player and animation_reload:
-				animation_player.play(animation_reload)
+                if animation_player and animation_reload:
+                                animation_player.play(animation_reload)
 
-		if reload_sfx:
-				reload_sfx.play()
+                if reload_sfx:
+                                reload_sfx.play()
 
-		reload_timer.start(reload_time)
+                reload_timer.start(reload_time)
 
 
 func _on_reload_timer_timeout() -> void:
-		is_reloading = false
+                is_reloading = false
 
-		var ammo_needed = mag_capacity - current_mag
-		var available_ammo = Bullets._get_ammo(bullet_type)
+                var ammo_needed = mag_capacity - current_mag
+                var available_ammo = Bullets._get_ammo(bullet_type)
 
-		if available_ammo == -1:
-				current_mag = mag_capacity
-		else:
-				var ammo_to_load = min(ammo_needed, available_ammo)
-				Bullets._consume_ammo(bullet_type, ammo_to_load)
-				current_mag += ammo_to_load
+                if available_ammo == -1:
+                                current_mag = mag_capacity
+                else:
+                                var ammo_to_load = min(ammo_needed, available_ammo)
+                                Bullets._consume_ammo(bullet_type, ammo_to_load)
+                                current_mag += ammo_to_load
 
-		Global.bullets_changed.emit()
+                Global.bullets_changed.emit()
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -763,17 +797,17 @@ func _on_reload_timer_timeout() -> void:
 # ══════════════════════════════════════════════════════════════════
 
 func _spawn_tracer(start: Vector3, end: Vector3) -> void:
-		if tracer_scene:
-				var instance = tracer_scene.instantiate()
-				get_tree().root.add_child(instance)
-				if instance.has_method("setup"):
-						instance.setup(start, end, tracer_color)
-		else:
-				var tracer_script = load("res://common/vfx/bullet_tracer/bullet_tracer.gd")
-				var tracer_node = Node3D.new()
-				tracer_node.set_script(tracer_script)
-				get_tree().root.add_child(tracer_node)
-				tracer_node.setup(start, end, tracer_color)
+                if tracer_scene:
+                                var instance = tracer_scene.instantiate()
+                                get_tree().root.add_child(instance)
+                                if instance.has_method("setup"):
+                                                instance.setup(start, end, tracer_color)
+                else:
+                                var tracer_script = load("res://common/vfx/bullet_tracer/bullet_tracer.gd")
+                                var tracer_node = Node3D.new()
+                                tracer_node.set_script(tracer_script)
+                                get_tree().root.add_child(tracer_node)
+                                tracer_node.setup(start, end, tracer_color)
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -781,20 +815,20 @@ func _spawn_tracer(start: Vector3, end: Vector3) -> void:
 # ══════════════════════════════════════════════════════════════════
 
 func _on_player_crouching_changed(crouching: bool) -> void:
-		is_player_crouching = crouching
+                is_player_crouching = crouching
 
 
 func _on_player_sprinting_changed(sprinting: bool) -> void:
-		is_player_sprinting = sprinting
+                is_player_sprinting = sprinting
 
 
 func _on_player_velocity_changed(velocity: Vector3) -> void:
-		player_horizontal_velocity = Vector2(velocity.x, velocity.z).length()
+                player_horizontal_velocity = Vector2(velocity.x, velocity.z).length()
 
-		# Detect fire release for recoil recovery + bloom decay
-		if was_firing and not Input.is_action_pressed("fire"):
-				is_firing = false  # Bloom can now start decaying
-				_begin_recoil_recovery()
+                # Detect fire release for recoil recovery + bloom decay
+                if was_firing and not Input.is_action_pressed("fire"):
+                                is_firing = false  # Bloom can now start decaying
+                                _begin_recoil_recovery()
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -802,29 +836,29 @@ func _on_player_velocity_changed(velocity: Vector3) -> void:
 # ══════════════════════════════════════════════════════════════════
 
 func _on_aim_mode_changed(aim_mode: bool) -> void:
-		if not visible:
-				return
+                if not visible:
+                                return
 
-		is_aimed = aim_mode
+                is_aimed = aim_mode
 
-		if aim_tween:
-				aim_tween.kill()
+                if aim_tween:
+                                aim_tween.kill()
 
-		if fps_arms_root:
-				aim_tween = create_tween()
-				aim_tween.set_parallel(true)
-				aim_tween.set_ease(Tween.EASE_IN_OUT)
-				aim_tween.set_trans(Tween.TRANS_CUBIC)
+                if fps_arms_root:
+                                aim_tween = create_tween()
+                                aim_tween.set_parallel(true)
+                                aim_tween.set_ease(Tween.EASE_IN_OUT)
+                                aim_tween.set_trans(Tween.TRANS_CUBIC)
 
-				var target_transform = focused_aim_position.transform if aim_mode else standard_aim_position.transform
-				aim_tween.tween_property(fps_arms_root, "transform", target_transform, AIM_TRANSITION_DURATION)
+                                var target_transform = focused_aim_position.transform if aim_mode else standard_aim_position.transform
+                                aim_tween.tween_property(fps_arms_root, "transform", target_transform, AIM_TRANSITION_DURATION)
 
-		# ADS FOV: base_fov * multiplier = zoom (71.0 * 0.80 = 56.8° for Vandal)
-		if aim_mode:
-				var ads_fov = BASE_CAMERA_FOV * ads_fov_multiplier
-				Global.active_camera_fov_changed.emit(ads_fov)
-				if Global.debug_mode:
-						print("AIM MODE: ", aim_mode, " - Weapon: ", name, " - FOV: ", ads_fov, " (", BASE_CAMERA_FOV, " * ", ads_fov_multiplier, ")")
+                # ADS FOV: base_fov * multiplier = zoom (71.0 * 0.80 = 56.8° for Vandal)
+                if aim_mode:
+                                var ads_fov = BASE_CAMERA_FOV * ads_fov_multiplier
+                                Global.active_camera_fov_changed.emit(ads_fov)
+                                if Global.debug_mode:
+                                                print("AIM MODE: ", aim_mode, " - Weapon: ", name, " - FOV: ", ads_fov, " (", BASE_CAMERA_FOV, " * ", ads_fov_multiplier, ")")
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -832,18 +866,18 @@ func _on_aim_mode_changed(aim_mode: bool) -> void:
 # ══════════════════════════════════════════════════════════════════
 
 func get_current_mag() -> int:
-		if is_melee_weapon:
-				return -1
-		return current_mag
+                if is_melee_weapon:
+                                return -1
+                return current_mag
 
 
 func get_current_ammo() -> int:
-		if is_melee_weapon:
-				return -1
-		return Bullets._get_ammo(bullet_type)
+                if is_melee_weapon:
+                                return -1
+                return Bullets._get_ammo(bullet_type)
 
 
 func get_max_ammo() -> int:
-		if is_melee_weapon:
-				return -1
-		return Bullets._get_max_ammo(bullet_type)
+                if is_melee_weapon:
+                                return -1
+                return Bullets._get_max_ammo(bullet_type)

@@ -191,25 +191,27 @@ func _physics_process(delta: float) -> void:
                 velocity.x = lerp(velocity.x, direction.x * speed, delta * inertia_air)
                 velocity.z = lerp(velocity.z, direction.z * speed, delta * inertia_air)
 
-        # Head bob — disabled during ADS, decays to zero when stopped
-        # When ADS, the bob would shift the camera 3cm per frame while zoomed,
-        # which looks like the aim is flicking on its own. Kill it entirely.
+        # Head bob — disabled during ADS, decays to zero when stopped.
+        # We lerp the OUTPUT position toward zero rather than the timer —
+        # lerping t_bob caused sin() phase jumps that looked like a camera
+        # hiccup when entering ADS mid-stride.
         var should_bob = is_on_floor() and velocity.length() > 0.5 and not is_aiming
 
         if should_bob:
                 var bob_multiplier = 0.5 if is_crouching else 1.0
                 t_bob += velocity.length() * delta * bob_multiplier
                 bob_active = true
+                camera_holder.transform.origin = _headbob(t_bob)
         else:
-                # Smoothly decay bob back to zero so camera doesn't freeze
-                # at a weird offset when you stop moving or enter ADS
-                if bob_active:
-                        t_bob = lerp(t_bob, 0.0, delta * 10.0)
-                        if abs(sin(t_bob * BOB_FREQ)) < 0.001 and abs(cos(t_bob * BOB_FREQ / 2.0)) < 0.001:
-                                t_bob = 0.0
-                                bob_active = false
-
-        camera_holder.transform.origin = _headbob(t_bob)
+                # Smoothly decay the camera position back to zero.
+                # Decay speed 12 feels fast enough to not linger but slow enough
+                # to not snap — important when entering ADS while running.
+                var current_bob = camera_holder.transform.origin
+                camera_holder.transform.origin = current_bob.lerp(Vector3.ZERO, delta * 12.0)
+                if camera_holder.transform.origin.length() < 0.0005:
+                        camera_holder.transform.origin = Vector3.ZERO
+                        bob_active = false
+                        t_bob = 0.0
 
         # Handle footstep sounds
         _handle_footsteps(delta)

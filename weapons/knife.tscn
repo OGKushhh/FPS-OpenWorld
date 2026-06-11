@@ -3,11 +3,18 @@
 [ext_resource type="PackedScene" uid="uid://dtkna74y7fni" path="res://common/weapon/weapon_base.tscn" id="1_yyc7w"]
 
 [node name="Knife" unique_id=1058031305 instance=ExtResource("1_yyc7w")]
+weapon_class = 0
 is_melee_weapon = true
 firing_distance = 1.0
 animation_fire = "knife"
 animation_reload = ""
 bullet_type = 0
+damage_head = 75.0
+damage_body = 50.0
+damage_legs = 50.0
+damage_falloff_start = 999.0
+damage_falloff_end = 999.0
+penetration_rating = 0
 mag_capacity = 1
 firing_vfx = null
 bullet_decal = null

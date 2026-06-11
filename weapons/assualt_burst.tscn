@@ -3,16 +3,30 @@
 [ext_resource type="PackedScene" uid="uid://dtkna74y7fni" path="res://common/weapon/weapon_base.tscn" id="1_l61x2"]
 
 [node name="AssualtBurstRifle" unique_id=1058031305 instance=ExtResource("1_l61x2")]
+weapon_class = 2
 firing_distance = 60.0
 animation_fire = "assualt_burst_fire"
 animation_reload = "assualt_burst_reload"
 bullet_type = 3
+damage = 30.0
+damage_head = 156.0
+damage_body = 30.0
+damage_legs = 26.0
+damage_falloff_start = 15.0
+damage_falloff_end = 30.0
+damage_falloff_min_ratio = 0.9
+penetration_rating = 1
 cooldown = 0.1
 burst_mode = true
+reload_time = 2.5
 mag_capacity = 40
 focused_aim_fov = 55.0
 focused_aim_angle = 1.0
 standard_aim_angle = 3.2
+recoil_vertical_pattern = Array[float]([0.25, 0.3, 0.35, 0.3, 0.25])
+base_spread_standing = 0.2
+firing_error_per_shot = 0.35
+max_spread_degrees = 4.5
 
 [node name="StandardAimPosition" parent="." index="0" unique_id=643753700]
 transform = Transform3D(0.99999994, 0, 0, 0, 1, 0, 0, 0, 0.99999994, 0.25, -0.025, 0.15)
