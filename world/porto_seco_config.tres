@@ -2,22 +2,64 @@
 
 [ext_resource type="Script" path="res://addons/citycrafter/city_configuration.gd" id="1_cfg"]
 
-[ext_resource type="PackedScene" path="res://world/buildings/residential/house_cottage.tscn"    id="2_r1"]
-[ext_resource type="PackedScene" path="res://world/buildings/residential/house_bungalow.tscn"   id="3_r2"]
-[ext_resource type="PackedScene" path="res://world/buildings/residential/trailer_house_a.tscn"  id="4_r3"]
-[ext_resource type="PackedScene" path="res://world/buildings/residential/trailer_house_b.tscn"  id="5_r4"]
-[ext_resource type="PackedScene" path="res://world/buildings/residential/apartment_block.tscn"  id="6_r5"]
+[ext_resource type="Material" path="res://world/materials/road.tres"              id="2_mat"]
+[ext_resource type="Material" path="res://world/materials/road_avenue.tres"        id="3_mat"]
+[ext_resource type="Material" path="res://world/materials/road_subdivision.tres"   id="4_mat"]
+[ext_resource type="Material" path="res://world/materials/intersection.tres"       id="5_mat"]
+[ext_resource type="Material" path="res://world/materials/ground_default.tres"     id="6_mat"]
+[ext_resource type="Material" path="res://world/materials/ground_residential.tres" id="7_mat"]
+[ext_resource type="Material" path="res://world/materials/ground_commercial.tres"  id="8_mat"]
+[ext_resource type="Material" path="res://world/materials/ground_industrial.tres"  id="9_mat"]
+[ext_resource type="Material" path="res://world/materials/ground_park.tres"        id="10_mat"]
+[ext_resource type="Material" path="res://world/materials/wall_procedural.tres"    id="11_mat"]
+[ext_resource type="Material" path="res://world/materials/window_procedural.tres"  id="12_mat"]
+[ext_resource type="Material" path="res://world/materials/roof_procedural.tres"    id="13_mat"]
 
-[ext_resource type="PackedScene" path="res://world/buildings/commercial/shop_front_a.tscn"      id="7_c1"]
-[ext_resource type="PackedScene" path="res://world/buildings/commercial/shop_front_b.tscn"      id="8_c2"]
-[ext_resource type="PackedScene" path="res://world/buildings/commercial/gas_station.tscn"       id="9_c3"]
-[ext_resource type="PackedScene" path="res://world/buildings/commercial/motel.tscn"             id="10_c4"]
-[ext_resource type="PackedScene" path="res://world/buildings/commercial/pawn_shop.tscn"         id="11_c5"]
+[ext_resource type="PackedScene" path="res://resources/buildings/house_1f.glb"              id="r01"]
+[ext_resource type="PackedScene" path="res://resources/buildings/house_1f_gable.glb"    id="r02"]
+[ext_resource type="PackedScene" path="res://resources/buildings/house_1f_round.glb"    id="r03"]
+[ext_resource type="PackedScene" path="res://resources/buildings/shop_1f_sign.glb"         id="r04"]
+[ext_resource type="PackedScene" path="res://resources/buildings/house_2f.glb"              id="r05"]
+[ext_resource type="PackedScene" path="res://resources/buildings/house_2f_balcony.glb"      id="r06"]
+[ext_resource type="PackedScene" path="res://resources/buildings/house_2f_gable.glb"    id="r07"]
+[ext_resource type="PackedScene" path="res://resources/buildings/house_2f_side.glb"    id="r08"]
+[ext_resource type="PackedScene" path="res://resources/buildings/building_2f_slim.glb"         id="r09"]
+[ext_resource type="PackedScene" path="res://resources/buildings/building_2f_stairs.glb"       id="r10"]
+[ext_resource type="PackedScene" path="res://resources/buildings/cottage_a.glb"              id="r11"]
+[ext_resource type="PackedScene" path="res://resources/buildings/cottage_b.glb"              id="r12"]
 
-[ext_resource type="PackedScene" path="res://world/buildings/industrial/warehouse.tscn"         id="12_i1"]
-[ext_resource type="PackedScene" path="res://world/buildings/industrial/scrapyard_shed.tscn"    id="13_i2"]
-[ext_resource type="PackedScene" path="res://world/buildings/industrial/gas_station_old.tscn"   id="14_i3"]
-[ext_resource type="PackedScene" path="res://world/buildings/industrial/barn.tscn"              id="15_i4"]
+[ext_resource type="PackedScene" path="res://resources/buildings/building_2f_b.glb"            id="c01"]
+[ext_resource type="PackedScene" path="res://resources/buildings/building_2f_center.glb"       id="c02"]
+[ext_resource type="PackedScene" path="res://resources/buildings/building_2f_columns.glb"      id="c03"]
+[ext_resource type="PackedScene" path="res://resources/buildings/building_2f_double.glb"       id="c04"]
+[ext_resource type="PackedScene" path="res://resources/buildings/building_2f_round.glb"    id="c05"]
+[ext_resource type="PackedScene" path="res://resources/buildings/shop_2f_sign.glb"         id="c06"]
+[ext_resource type="PackedScene" path="res://resources/buildings/building_2f_wide.glb"         id="c07"]
+[ext_resource type="PackedScene" path="res://resources/buildings/building_2f_wide_2doors.glb"  id="c08"]
+[ext_resource type="PackedScene" path="res://resources/buildings/building_3f_balcony.glb"      id="c09"]
+[ext_resource type="PackedScene" path="res://resources/buildings/building_3f_slim.glb"         id="c10"]
+[ext_resource type="PackedScene" path="res://resources/buildings/building_3f_small.glb"        id="c11"]
+[ext_resource type="PackedScene" path="res://resources/buildings/warehouse_small.glb"     id="c12"]
+[ext_resource type="PackedScene" path="res://resources/buildings/factory_small.glb"     id="c13"]
+
+[ext_resource type="PackedScene" path="res://resources/buildings/building_4f.glb"              id="i01"]
+[ext_resource type="PackedScene" path="res://resources/buildings/building_4f_center.glb"       id="i02"]
+[ext_resource type="PackedScene" path="res://resources/buildings/building_4f_wide.glb"  id="i03"]
+[ext_resource type="PackedScene" path="res://resources/buildings/building_4f_wide_roof.glb" id="i04"]
+[ext_resource type="PackedScene" path="res://resources/buildings/building_6f_stack.glb"        id="i05"]
+[ext_resource type="PackedScene" path="res://resources/buildings/warehouse_large.glb"     id="i06"]
+[ext_resource type="PackedScene" path="res://resources/buildings/factory_large.glb"     id="i07"]
+[ext_resource type="PackedScene" path="res://resources/buildings/industrial_block_large.glb"       id="i08"]
+[ext_resource type="PackedScene" path="res://resources/buildings/industrial_block_small.glb"     id="i09"]
+[ext_resource type="PackedScene" path="res://resources/buildings/industrial_block_b.glb"           id="i10"]
+
+[ext_resource type="PackedScene" path="res://resources/nature/commontree_1.glb"           id="p01"]
+[ext_resource type="PackedScene" path="res://resources/nature/commontree_2.glb"           id="p02"]
+[ext_resource type="PackedScene" path="res://resources/nature/commontree_3.glb"           id="p03"]
+[ext_resource type="PackedScene" path="res://resources/nature/pine_1.glb"                 id="p04"]
+[ext_resource type="PackedScene" path="res://resources/nature/pine_2.glb"                 id="p05"]
+[ext_resource type="PackedScene" path="res://resources/nature/bush_common.glb"            id="p06"]
+[ext_resource type="PackedScene" path="res://resources/nature/bush_common_flowers.glb"    id="p07"]
 
 [resource]
 script = ExtResource("1_cfg")
@@ -39,36 +81,33 @@ empty_block_chance = 0.04
 district_mode = 1
 residential_ratio = 0.35
 commercial_ratio = 0.40
-industrial_ratio = 0.25
+industrial_ratio = 0.20
+park_ratio = 0.05
 noise_scale = 0.08
 
-residential_buildings = Array[PackedScene]([
-	ExtResource("2_r1"), ExtResource("3_r2"), ExtResource("4_r3"),
-	ExtResource("5_r4"), ExtResource("6_r5")
-])
-commercial_buildings = Array[PackedScene]([
-	ExtResource("7_c1"), ExtResource("8_c2"), ExtResource("9_c3"),
-	ExtResource("10_c4"), ExtResource("11_c5")
-])
-industrial_buildings = Array[PackedScene]([
-	ExtResource("12_i1"), ExtResource("13_i2"), ExtResource("14_i3"),
-	ExtResource("15_i4")
-])
+residential_buildings = Array[PackedScene]([ExtResource("r01"), ExtResource("r02"), ExtResource("r03"), ExtResource("r04"), ExtResource("r05"), ExtResource("r06"), ExtResource("r07"), ExtResource("r08"), ExtResource("r09"), ExtResource("r10"), ExtResource("r11"), ExtResource("r12")])
+commercial_buildings = Array[PackedScene]([ExtResource("c01"), ExtResource("c02"), ExtResource("c03"), ExtResource("c04"), ExtResource("c05"), ExtResource("c06"), ExtResource("c07"), ExtResource("c08"), ExtResource("c09"), ExtResource("c10"), ExtResource("c11"), ExtResource("c12"), ExtResource("c13")])
+industrial_buildings = Array[PackedScene]([ExtResource("i01"), ExtResource("i02"), ExtResource("i03"), ExtResource("i04"), ExtResource("i05"), ExtResource("i06"), ExtResource("i07"), ExtResource("i08"), ExtResource("i09"), ExtResource("i10")])
+park_elements = Array[PackedScene]([ExtResource("p01"), ExtResource("p02"), ExtResource("p03"), ExtResource("p04"), ExtResource("p05"), ExtResource("p06"), ExtResource("p07")])
 
-rotation_mode = 1
-scale_variation = 0.2
+rotation_mode = 3
+scale_variation = 0.1
+enable_grid_aligned = true
+front_setback = 5.0
+side_setback = 4.0
+rear_setback = 5.0
 
 enable_residential_subdivisions = true
 subdivision_mode = 1
 subdivision_layout = 0
 subdivision_street_width = 8.0
 residential_buildings_min = 2
-residential_buildings_max = 5
+residential_buildings_max = 4
 residential_spacing = 18.0
-residential_border_margin = 12.0
+residential_border_margin = 10.0
 
 commercial_buildings_min = 4
-commercial_buildings_max = 8
+commercial_buildings_max = 7
 commercial_spacing = 40.0
 commercial_border_margin = 20.0
 
@@ -77,9 +116,44 @@ industrial_buildings_max = 10
 industrial_spacing = 25.0
 industrial_border_margin = 15.0
 
+park_elements_count_min = 8
+park_elements_count_max = 20
+
+enable_multi_story = true
+floor_height = 3.0
+procedural_wall_material = ExtResource("11_mat")
+procedural_window_material = ExtResource("12_mat")
+procedural_roof_material = ExtResource("13_mat")
+residential_min_floors = 1
+residential_max_floors = 3
+commercial_min_floors = 2
+commercial_max_floors = 8
+industrial_min_floors = 1
+industrial_max_floors = 3
+
 generate_roads = true
 generate_intersections = true
+road_material = ExtResource("2_mat")
+intersection_material = ExtResource("5_mat")
 intersection_height_offset = 0.01
 generate_subdivision_roads = true
+subdivision_road_material = ExtResource("4_mat")
+enable_main_avenues = true
+avenue_width = 35.0
+avenue_interval = 3
+avenue_material = ExtResource("3_mat")
+enable_roundabouts = false
+enable_diagonal_roads = false
+
+generate_collision = true
+generate_navigation = false
+
+enable_terrain = false
+
 generate_ground = true
-ground_height_offset = -0.1
+ground_height_offset = -0.05
+ground_material = ExtResource("6_mat")
+residential_ground_material = ExtResource("7_mat")
+commercial_ground_material = ExtResource("8_mat")
+industrial_ground_material = ExtResource("9_mat")
+park_ground_material = ExtResource("10_mat")

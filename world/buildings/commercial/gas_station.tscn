@@ -3,33 +3,29 @@
 [ext_resource type="PackedScene" path="res://resources/assetsville/Buildings/SM_GasStationOld.gltf" id="1_SM_GasStationOld"]
 [ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_gasPumpsOld.gltf" id="2_SM_gasPumpsOld"]
 [ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_gasStationCarPort_01.gltf" id="3_SM_gasStationCarPort_01"]
-[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_billboard_GasStationOld.gltf" id="4_SM_billboard_GasStationOld"]
-[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_billboard_86Gasoline.gltf" id="5_SM_billboard_86Gasoline"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_billboard_86Gasoline.gltf" id="4_SM_billboard_86Gasoline"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_road_cone.gltf" id="5_SM_road_cone"]
 [ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_trash_bin_2.gltf" id="6_SM_trash_bin_2"]
-[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_road_cone.gltf" id="7_SM_road_cone"]
 
 [node name="Building" type="Node3D"]
 
-[node name="piece_000_SM_GasStationOld" type="Node3D" parent="." unique_id=1970201882 instance=ExtResource("1_SM_GasStationOld")]
+[node name="p000_SM_GasStationOld" type="Node3D" parent="." unique_id=472769646 instance=ExtResource("1_SM_GasStationOld")]
 transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, 0, 0)
 
-[node name="piece_001_SM_gasPumpsOld" type="Node3D" parent="." unique_id=1381503599 instance=ExtResource("2_SM_gasPumpsOld")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 6, 0, 3)
+[node name="p001_SM_gasPumpsOld" type="Node3D" parent="." unique_id=1067345840 instance=ExtResource("2_SM_gasPumpsOld")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 8, 0, 4)
 
-[node name="piece_002_SM_gasStationCarPort_01" type="Node3D" parent="." unique_id=431447600 instance=ExtResource("3_SM_gasStationCarPort_01")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 6, 0, 3)
+[node name="p002_SM_gasStationCarPort_01" type="Node3D" parent="." unique_id=1991080337 instance=ExtResource("3_SM_gasStationCarPort_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 8, 0, 4)
 
-[node name="piece_003_SM_billboard_GasStationOld" type="Node3D" parent="." unique_id=1690177794 instance=ExtResource("4_SM_billboard_GasStationOld")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, 0, -8)
+[node name="p003_SM_billboard_86Gasoline" type="Node3D" parent="." unique_id=648977762 instance=ExtResource("4_SM_billboard_86Gasoline")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, -2, 0, -3)
 
-[node name="piece_004_SM_billboard_86Gasoline" type="Node3D" parent="." unique_id=1537607076 instance=ExtResource("5_SM_billboard_86Gasoline")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 8, 5, 0)
+[node name="p004_SM_road_cone" type="Node3D" parent="." unique_id=1561393234 instance=ExtResource("5_SM_road_cone")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 6, 0, 9)
 
-[node name="piece_005_SM_trash_bin_2" type="Node3D" parent="." unique_id=1873023987 instance=ExtResource("6_SM_trash_bin_2")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 10, 0, 1)
+[node name="p005_SM_road_cone" type="Node3D" parent="." unique_id=597219245 instance=ExtResource("5_SM_road_cone")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 10, 0, 9)
 
-[node name="piece_006_SM_road_cone" type="Node3D" parent="." unique_id=372471348 instance=ExtResource("7_SM_road_cone")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 4, 0, 6)
-
-[node name="piece_007_SM_road_cone" type="Node3D" parent="." unique_id=139630195 instance=ExtResource("7_SM_road_cone")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 8, 0, 6)
+[node name="p006_SM_trash_bin_2" type="Node3D" parent="." unique_id=585147016 instance=ExtResource("6_SM_trash_bin_2")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 14, 0, 2)

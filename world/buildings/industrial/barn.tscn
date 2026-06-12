@@ -10,26 +10,26 @@
 
 [node name="Building" type="Node3D"]
 
-[node name="piece_000_SM_buildingBarn_01" type="Node3D" parent="." unique_id=1592127282 instance=ExtResource("1_SM_buildingBarn_01")]
+[node name="p000_SM_buildingBarn_01" type="Node3D" parent="." unique_id=1902098625 instance=ExtResource("1_SM_buildingBarn_01")]
 transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, 0, 0)
 
-[node name="piece_001_SM_fence_107a" type="Node3D" parent="." unique_id=477450348 instance=ExtResource("2_SM_fence_107a")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 10, 0, 0)
+[node name="p001_SM_fence_107a" type="Node3D" parent="." unique_id=1185884918 instance=ExtResource("2_SM_fence_107a")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 13, 0, 0)
 
-[node name="piece_002_SM_fence_107a" type="Node3D" parent="." unique_id=707958252 instance=ExtResource("2_SM_fence_107a")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 10, 0, 4)
+[node name="p002_SM_fence_107a" type="Node3D" parent="." unique_id=529373017 instance=ExtResource("2_SM_fence_107a")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 13, 0, 6)
 
-[node name="piece_003_SM_Water_Tank_01" type="Node3D" parent="." unique_id=1107952810 instance=ExtResource("3_SM_Water_Tank_01")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 12, 0, 3)
+[node name="p003_SM_Water_Tank_01" type="Node3D" parent="." unique_id=1049645041 instance=ExtResource("3_SM_Water_Tank_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 15, 0, 3)
 
-[node name="piece_004_SM_barrel_1" type="Node3D" parent="." unique_id=883401070 instance=ExtResource("4_SM_barrel_1")]
-transform = Transform3D(0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.939693, 11, 0, 1)
+[node name="p004_SM_barrel_1" type="Node3D" parent="." unique_id=402504784 instance=ExtResource("4_SM_barrel_1")]
+transform = Transform3D(0.939693, 0, 0.34202, 0, 1, 0, -0.34202, 0, 0.939693, 13, 0, 1)
 
-[node name="piece_005_SM_barrel_2" type="Node3D" parent="." unique_id=1818039531 instance=ExtResource("5_SM_barrel_2")]
-transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 11, 0, 2)
+[node name="p005_SM_barrel_2" type="Node3D" parent="." unique_id=1707546181 instance=ExtResource("5_SM_barrel_2")]
+transform = Transform3D(0.707107, 0, 0.707107, 0, 1, 0, -0.707107, 0, 0.707107, 14, 0, 2)
 
-[node name="piece_006_SM_Windmill_01" type="Node3D" parent="." unique_id=1430780822 instance=ExtResource("6_SM_Windmill_01")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 14, 0, 0)
+[node name="p006_SM_Windmill_01" type="Node3D" parent="." unique_id=1430286571 instance=ExtResource("6_SM_Windmill_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 17, 0, 0)
 
-[node name="piece_007_SM_woodenShack_01" type="Node3D" parent="." unique_id=1053403790 instance=ExtResource("7_SM_woodenShack_01")]
-transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 14, 0, 5)
+[node name="p007_SM_woodenShack_01" type="Node3D" parent="." unique_id=1511524434 instance=ExtResource("7_SM_woodenShack_01")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 17, 0, 7)

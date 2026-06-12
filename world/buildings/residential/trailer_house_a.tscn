@@ -3,17 +3,21 @@
 [ext_resource type="PackedScene" path="res://resources/assetsville/Buildings/SM_buildingTrailerHouse_01.gltf" id="1_SM_buildingTrailerHouse_01"]
 [ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_fence_102a.gltf" id="2_SM_fence_102a"]
 [ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_mailbox_1.gltf" id="3_SM_mailbox_1"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_barrel_1.gltf" id="4_SM_barrel_1"]
 
 [node name="Building" type="Node3D"]
 
-[node name="piece_000_SM_buildingTrailerHouse_01" type="Node3D" parent="." unique_id=212820111 instance=ExtResource("1_SM_buildingTrailerHouse_01")]
+[node name="p000_SM_buildingTrailerHouse_01" type="Node3D" parent="." unique_id=306735968 instance=ExtResource("1_SM_buildingTrailerHouse_01")]
 transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, 0, 0)
 
-[node name="piece_001_SM_fence_102a" type="Node3D" parent="." unique_id=1471077803 instance=ExtResource("2_SM_fence_102a")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 6, 0, 0)
+[node name="p001_SM_fence_102a" type="Node3D" parent="." unique_id=979416545 instance=ExtResource("2_SM_fence_102a")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 9, 0, 0)
 
-[node name="piece_002_SM_fence_102a" type="Node3D" parent="." unique_id=1607298533 instance=ExtResource("2_SM_fence_102a")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 6, 0, 2)
+[node name="p002_SM_fence_102a" type="Node3D" parent="." unique_id=536200642 instance=ExtResource("2_SM_fence_102a")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 9, 0, 4)
 
-[node name="piece_003_SM_mailbox_1" type="Node3D" parent="." unique_id=1155692249 instance=ExtResource("3_SM_mailbox_1")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 5, 0, -1)
+[node name="p003_SM_mailbox_1" type="Node3D" parent="." unique_id=502554919 instance=ExtResource("3_SM_mailbox_1")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 8, 0, -1)
+
+[node name="p004_SM_barrel_1" type="Node3D" parent="." unique_id=402504784 instance=ExtResource("4_SM_barrel_1")]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, 11, 0, 3)

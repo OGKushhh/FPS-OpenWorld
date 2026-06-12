@@ -1,0 +1,112 @@
+{
+  "asset" : {
+    "generator" : "UE Viewer (umodel) build 1590",
+    "version" : "2.0"
+  },
+  "scene" : 0,
+  "scenes" : [
+    {
+      "nodes" : [ 0 ]
+    }
+  ],
+  "nodes" : [
+    {
+      "name" : "SM_woodenShack_01",
+      "mesh" : 0
+    }
+  ],
+  "materials" : [
+    {
+      "name" : "dummy_material_0",
+      "pbrMetallicRoughness" : {
+        "baseColorFactor" : [ 0.3, 0.3, 0.3, 1.0 ],
+        "metallicFactor" : 0.1,
+        "roughnessFactor" : 0.5
+      }
+    }
+  ],
+  "meshes" : [
+    {
+      "primitives" : [
+        {
+          "attributes" : {
+            "POSITION" : 1,
+            "NORMAL" : 2,
+            "TANGENT" : 3,
+            "TEXCOORD_0" : 4
+          },
+          "indices" : 0,
+          "material" : 0
+        }
+      ],
+      "name" : "SM_woodenShack_01"
+    }
+  ],
+  "buffers" : [
+    {
+      "uri" : "SM_woodenShack_01.bin",
+      "byteLength" : 59252
+    }
+  ],
+  "bufferViews" : [
+    {
+      "buffer" : 0,
+      "byteOffset" : 0,
+      "byteLength" : 2372
+    },
+    {
+      "buffer" : 0,
+      "byteOffset" : 2372,
+      "byteLength" : 14220
+    },
+    {
+      "buffer" : 0,
+      "byteOffset" : 16592,
+      "byteLength" : 14220
+    },
+    {
+      "buffer" : 0,
+      "byteOffset" : 30812,
+      "byteLength" : 18960
+    },
+    {
+      "buffer" : 0,
+      "byteOffset" : 49772,
+      "byteLength" : 9480
+    }
+  ],
+  "accessors" : [
+    {
+      "bufferView" : 0,
+      "componentType" : 5123,
+      "count" : 1185,
+      "type" : "SCALAR"
+    },
+    {
+      "bufferView" : 1,
+      "min" : [ -3.26411, -1.52588e-07, -6.09934 ],
+      "max" : [ 3.31956, 3.07159, 5.50378 ],
+      "componentType" : 5126,
+      "count" : 1185,
+      "type" : "VEC3"
+    },
+    {
+      "bufferView" : 2,
+      "componentType" : 5126,
+      "count" : 1185,
+      "type" : "VEC3"
+    },
+    {
+      "bufferView" : 3,
+      "componentType" : 5126,
+      "count" : 1185,
+      "type" : "VEC4"
+    },
+    {
+      "bufferView" : 4,
+      "componentType" : 5126,
+      "count" : 1185,
+      "type" : "VEC2"
+    }
+  ]
+}

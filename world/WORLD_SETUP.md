@@ -13,7 +13,8 @@
 | `world/props/street_populator.gd` | Street prop + vehicle scattering tool |
 | `autoloads/world_stream.gd` | Chunk streaming system (4×4, 500m chunks) |
 | `addons/citycrafter/` | CityСrafter v1.1 plugin |
-| `resources/assetsville/` | All Assetsville GLTF assets (340+ files) |
+| `resources/props/` | 205 street props (GLTF) |
+| `resources/ground_tiles/` | 31 ground/road tiles (GLTF) |
 | `resources/furniture/` | 40 furniture GLBs |
 | `resources/vehicles/` | 8 vehicle GLBs |
 

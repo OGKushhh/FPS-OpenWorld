@@ -15,41 +15,41 @@
 
 [node name="Building" type="Node3D"]
 
-[node name="piece_000_SM_shed_01" type="Node3D" parent="." unique_id=1732709037 instance=ExtResource("1_SM_shed_01")]
+[node name="p000_SM_shed_01" type="Node3D" parent="." unique_id=1728841216 instance=ExtResource("1_SM_shed_01")]
 transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, 0, 0)
 
-[node name="piece_001_SM_fence_104a" type="Node3D" parent="." unique_id=353977238 instance=ExtResource("2_SM_fence_104a")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 6, 0, 0)
+[node name="p001_SM_fence_104a" type="Node3D" parent="." unique_id=637693703 instance=ExtResource("2_SM_fence_104a")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 5, 0, 0)
 
-[node name="piece_002_SM_fence_104a" type="Node3D" parent="." unique_id=1514371372 instance=ExtResource("2_SM_fence_104a")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 6, 0, 4)
+[node name="p002_SM_fence_104a" type="Node3D" parent="." unique_id=301291689 instance=ExtResource("2_SM_fence_104a")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 5, 0, 4)
 
-[node name="piece_003_SM_fence_104gate" type="Node3D" parent="." unique_id=1238399087 instance=ExtResource("3_SM_fence_104gate")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 6, 0, 8)
+[node name="p003_SM_fence_104gate" type="Node3D" parent="." unique_id=319150350 instance=ExtResource("3_SM_fence_104gate")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 5, 0, 8)
 
-[node name="piece_004_SM_fence_104gateFrame" type="Node3D" parent="." unique_id=955234131 instance=ExtResource("4_SM_fence_104gateFrame")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 6, 0, 8)
+[node name="p004_SM_fence_104gateFrame" type="Node3D" parent="." unique_id=720235159 instance=ExtResource("4_SM_fence_104gateFrame")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 5, 0, 8)
 
-[node name="piece_005_SM_wreck_01" type="Node3D" parent="." unique_id=120390432 instance=ExtResource("5_SM_wreck_01")]
-transform = Transform3D(0.906308, 0, 0.422618, 0, 1, 0, -0.422618, 0, 0.906308, 8, 0, 2)
+[node name="p005_SM_wreck_01" type="Node3D" parent="." unique_id=1036254675 instance=ExtResource("5_SM_wreck_01")]
+transform = Transform3D(0.906308, 0, 0.422618, 0, 1, 0, -0.422618, 0, 0.906308, 9, 0, 2)
 
-[node name="piece_006_SM_wreck_02" type="Node3D" parent="." unique_id=1769770533 instance=ExtResource("6_SM_wreck_02")]
-transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, 10, 0, 5)
+[node name="p006_SM_wreck_02" type="Node3D" parent="." unique_id=515507415 instance=ExtResource("6_SM_wreck_02")]
+transform = Transform3D(0.965926, 0, -0.258819, 0, 1, 0, 0.258819, 0, 0.965926, 12, 0, 6)
 
-[node name="piece_007_SM_TireSet_01" type="Node3D" parent="." unique_id=1448418586 instance=ExtResource("7_SM_TireSet_01")]
+[node name="p007_SM_TireSet_01" type="Node3D" parent="." unique_id=1818358216 instance=ExtResource("7_SM_TireSet_01")]
 transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 7, 0, 1)
 
-[node name="piece_008_SM_TireSet_02" type="Node3D" parent="." unique_id=507189580 instance=ExtResource("8_SM_TireSet_02")]
+[node name="p008_SM_TireSet_02" type="Node3D" parent="." unique_id=939734922 instance=ExtResource("8_SM_TireSet_02")]
 transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 7, 0, 3)
 
-[node name="piece_009_SM_metal_box" type="Node3D" parent="." unique_id=1070392572 instance=ExtResource("9_SM_metal_box")]
+[node name="p009_SM_metal_box" type="Node3D" parent="." unique_id=1359144604 instance=ExtResource("9_SM_metal_box")]
 transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 3, 0, 6)
 
-[node name="piece_010_SM_metal_box_2" type="Node3D" parent="." unique_id=1717841563 instance=ExtResource("10_SM_metal_box_2")]
+[node name="p010_SM_metal_box_2" type="Node3D" parent="." unique_id=379067055 instance=ExtResource("10_SM_metal_box_2")]
 transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 4, 0, 6)
 
-[node name="piece_011_SM_rolledBars_01" type="Node3D" parent="." unique_id=1793968479 instance=ExtResource("11_SM_rolledBars_01")]
+[node name="p011_SM_rolledBars_01" type="Node3D" parent="." unique_id=990605107 instance=ExtResource("11_SM_rolledBars_01")]
 transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 5, 0, 6)
 
-[node name="piece_012_SM_tank" type="Node3D" parent="." unique_id=1506522616 instance=ExtResource("12_SM_tank")]
+[node name="p012_SM_tank" type="Node3D" parent="." unique_id=1129278862 instance=ExtResource("12_SM_tank")]
 transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, 0, 6)

@@ -1,57 +1,54 @@
 [gd_scene format=3]
 
-[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_wall_02.gltf" id="1_SM_wall_02"]
-[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_wallDoor_02.gltf" id="2_SM_wallDoor_02"]
-[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_window_02.gltf" id="3_SM_window_02"]
-[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_floor_01.gltf" id="4_SM_floor_01"]
-[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_roof_02.gltf" id="5_SM_roof_02"]
-[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_roof_02_end.gltf" id="6_SM_roof_02_end"]
-[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_cornice_02.gltf" id="7_SM_cornice_02"]
-[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_cornice_02_corner.gltf" id="8_SM_cornice_02_corner"]
-[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_foundWood_01.gltf" id="9_SM_foundWood_01"]
-[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_foundWood_01_corner.gltf" id="10_SM_foundWood_01_corner"]
-[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_veranda_01.gltf" id="11_SM_veranda_01"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_wallDoor_01.gltf" id="1_SM_wallDoor_01"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_wall_02.gltf" id="2_SM_wall_02"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_floor_01.gltf" id="3_SM_floor_01"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_window_03.gltf" id="4_SM_window_03"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_roof_01.gltf" id="5_SM_roof_01"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_cornice_02.gltf" id="6_SM_cornice_02"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/BuildingTilset/SM_veranda_01.gltf" id="7_SM_veranda_01"]
+[ext_resource type="PackedScene" path="res://resources/assetsville/StreetProps/SM_mailbox_1.gltf" id="8_SM_mailbox_1"]
 
 [node name="Building" type="Node3D"]
 
-[node name="piece_000_SM_wall_02" type="Node3D" parent="." unique_id=534601874 instance=ExtResource("1_SM_wall_02")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, 0, 0)
+[node name="p000_SM_wallDoor_01" type="Node3D" parent="." unique_id=983521416 instance=ExtResource("1_SM_wallDoor_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0.0, 0, 0)
 
-[node name="piece_001_SM_wall_02" type="Node3D" parent="." unique_id=220893218 instance=ExtResource("1_SM_wall_02")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 4, 0, 0)
+[node name="p001_SM_wall_02" type="Node3D" parent="." unique_id=839280950 instance=ExtResource("2_SM_wall_02")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 4.0, 0, 0)
 
-[node name="piece_002_SM_wall_02" type="Node3D" parent="." unique_id=820359011 instance=ExtResource("1_SM_wall_02")]
-transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 0, 0, 4)
+[node name="p002_SM_wall_02" type="Node3D" parent="." unique_id=697577691 instance=ExtResource("2_SM_wall_02")]
+transform = Transform3D(-1.0, 0, 0.0, 0, 1, 0, -0.0, 0, -1.0, 0.0, 0, 4.0)
 
-[node name="piece_003_SM_wallDoor_02" type="Node3D" parent="." unique_id=864677523 instance=ExtResource("2_SM_wallDoor_02")]
-transform = Transform3D(-0.0, 0, -1.0, 0, 1, 0, 1.0, 0, -0.0, -4, 0, 4)
+[node name="p003_SM_wall_02" type="Node3D" parent="." unique_id=1590410540 instance=ExtResource("2_SM_wall_02")]
+transform = Transform3D(-1.0, 0, 0.0, 0, 1, 0, -0.0, 0, -1.0, 4.0, 0, 4.0)
 
-[node name="piece_004_SM_window_02" type="Node3D" parent="." unique_id=131020455 instance=ExtResource("3_SM_window_02")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 2, 1.5, 0)
+[node name="p004_SM_wall_02" type="Node3D" parent="." unique_id=496841207 instance=ExtResource("2_SM_wall_02")]
+transform = Transform3D(-0.0, 0, -1.0, 0, 1, 0, 1.0, 0, -0.0, 0, 0, 0.0)
 
-[node name="piece_005_SM_window_02" type="Node3D" parent="." unique_id=773401264 instance=ExtResource("3_SM_window_02")]
-transform = Transform3D(-1.0, 0, 0.0, 0, 1, 0, -0.0, 0, -1.0, 2, 1.5, 4)
+[node name="p005_SM_wall_02" type="Node3D" parent="." unique_id=409168103 instance=ExtResource("2_SM_wall_02")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 8.0, 0, 0.0)
 
-[node name="piece_006_SM_floor_01" type="Node3D" parent="." unique_id=33614384 instance=ExtResource("4_SM_floor_01")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, 0, 0)
+[node name="p006_SM_floor_01" type="Node3D" parent="." unique_id=180413006 instance=ExtResource("3_SM_floor_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 2.0, 0, 2.0)
 
-[node name="piece_007_SM_roof_02" type="Node3D" parent="." unique_id=605137842 instance=ExtResource("5_SM_roof_02")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, 4, 0)
+[node name="p007_SM_floor_01" type="Node3D" parent="." unique_id=1543814465 instance=ExtResource("3_SM_floor_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 6.0, 0, 2.0)
 
-[node name="piece_008_SM_roof_02_end" type="Node3D" parent="." unique_id=917301009 instance=ExtResource("6_SM_roof_02_end")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 4, 4, 0)
+[node name="p008_SM_window_03" type="Node3D" parent="." unique_id=216553958 instance=ExtResource("4_SM_window_03")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 5.45, 0.4, 0)
 
-[node name="piece_009_SM_cornice_02" type="Node3D" parent="." unique_id=1970009031 instance=ExtResource("7_SM_cornice_02")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, 4, 0)
+[node name="p009_SM_roof_01" type="Node3D" parent="." unique_id=470290089 instance=ExtResource("5_SM_roof_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 2.0, 1.0, 2.0)
 
-[node name="piece_010_SM_cornice_02_corner" type="Node3D" parent="." unique_id=697219454 instance=ExtResource("8_SM_cornice_02_corner")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 4, 4, 0)
+[node name="p010_SM_roof_01" type="Node3D" parent="." unique_id=1351665718 instance=ExtResource("5_SM_roof_01")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 6.0, 1.0, 2.0)
 
-[node name="piece_011_SM_foundWood_01" type="Node3D" parent="." unique_id=774850969 instance=ExtResource("9_SM_foundWood_01")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, -0.5, 0)
+[node name="p011_SM_cornice_02" type="Node3D" parent="." unique_id=495193487 instance=ExtResource("6_SM_cornice_02")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 0, 1.0, 0)
 
-[node name="piece_012_SM_foundWood_01_corner" type="Node3D" parent="." unique_id=424979323 instance=ExtResource("10_SM_foundWood_01_corner")]
-transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 4, -0.5, 0)
+[node name="p012_SM_veranda_01" type="Node3D" parent="." unique_id=476215347 instance=ExtResource("7_SM_veranda_01")]
+transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 8.05, 0.85, 2.0)
 
-[node name="piece_013_SM_veranda_01" type="Node3D" parent="." unique_id=370952449 instance=ExtResource("11_SM_veranda_01")]
-transform = Transform3D(0.0, 0, 1.0, 0, 1, 0, -1.0, 0, 0.0, 4, 0, 2)
+[node name="p013_SM_mailbox_1" type="Node3D" parent="." unique_id=887265435 instance=ExtResource("8_SM_mailbox_1")]
+transform = Transform3D(1.0, 0, 0.0, 0, 1, 0, -0.0, 0, 1.0, 9.0, 0, -0.5)
