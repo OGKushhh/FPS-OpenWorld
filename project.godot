@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="fps-demo"
-run/main_scene="uid://c017hjlm6liyy"
+run/main_scene="uid://bafqky8gro8f2"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 

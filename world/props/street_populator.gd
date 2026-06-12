@@ -122,7 +122,7 @@ func _populate_vehicles(cfg: CityConfiguration) -> void:
 				1: vx = bx + t * cfg.block_size; vz = bz + cfg.block_size + cfg.street_width * 0.4; rot = 180
 				2: vx = bx - cfg.street_width * 0.4; vz = bz + t * cfg.block_size; rot = 90
 				3: vx = bx + cfg.block_size + cfg.street_width * 0.4; vz = bz + t * cfg.block_size; rot = 270
-			var v := VEHICLES[rng.randi_range(0, VEHICLES.size() - 1)]
+			var v: String = VEHICLES[rng.randi_range(0, VEHICLES.size() - 1)]
 			_spawn(v, Vector3(vx, 0, vz), rot)
 
 func _spawn(path: String, pos: Vector3, rot_y: float) -> void:

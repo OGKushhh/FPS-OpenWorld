@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://resources/buildings/bungalow_wide.glb" id="1_bungalow_wide"]
+
+[node name="bungalow_wide" type="Node3D"]
+scale = Vector3(2.8364, 2.8364, 2.8364)
+
+[node name="Model" parent="." instance=ExtResource("1_bungalow_wide")]

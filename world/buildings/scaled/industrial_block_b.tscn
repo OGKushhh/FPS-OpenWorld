@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://resources/buildings/industrial_block_b.glb" id="1_industrial_block_b"]
+
+[node name="industrial_block_b" type="Node3D"]
+scale = Vector3(2.2174, 2.2174, 2.2174)
+
+[node name="Model" parent="." instance=ExtResource("1_industrial_block_b")]

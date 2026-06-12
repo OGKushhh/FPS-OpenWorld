@@ -7,6 +7,7 @@ extends Resource
 @export var grid_height: int = 8
 @export var block_size: float = 200.0
 @export var street_width: float = 25.0
+@export var buildings_per_frame: int = 6
 
 @export_group("Block Variations")
 @export var enable_multi_size_blocks: bool = false
