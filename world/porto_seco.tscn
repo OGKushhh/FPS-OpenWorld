@@ -3,29 +3,67 @@
 [ext_resource type="Script" uid="uid://dvlgclv0w1a38" path="res://addons/citycrafter/citycrafter.gd" id="1_cc"]
 [ext_resource type="Resource" path="res://world/porto_seco_config.tres" id="2_cfg"]
 [ext_resource type="PackedScene" uid="uid://cdbipjyx57al2" path="res://player/player.tscn" id="3_player"]
+[ext_resource type="Script" uid="uid://bjqxl2y4vkf3g" path="res://common/main.gd" id="4_main"]
+[ext_resource type="Script" uid="uid://bee0xk53hkjjw" path="res://common/managers/input_manager.gd" id="5_input"]
+[ext_resource type="PackedScene" uid="uid://cyu64gank77ya" path="res://common/hud/gameplay_hud.tscn" id="6_hud"]
 
-[node name="PortoSeco" type="Node3D" unique_id=707331825]
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_porto"]
+sky_horizon_color = Color(0.55, 0.62, 0.72, 1)
+ground_horizon_color = Color(0.45, 0.42, 0.38, 1)
+energy_multiplier = 1.8
 
-[node name="WorldEnv" type="WorldEnvironment" parent="." unique_id=712346137]
+[sub_resource type="Sky" id="Sky_porto"]
+sky_material = SubResource("ProceduralSkyMaterial_porto")
 
-[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1747388106]
+[sub_resource type="Environment" id="Environment_porto"]
+background_mode = 2
+sky = SubResource("Sky_porto")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
+size = Vector3(2500, 1, 2500)
+
+[node name="PortoSeco" type="Node3D" unique_id=1056989269]
+script = ExtResource("4_main")
+
+[node name="InputManager" type="Node" parent="." unique_id=1609090045]
+script = ExtResource("5_input")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=854344574]
+environment = SubResource("Environment_porto")
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1091195269]
 transform = Transform3D(0.866, -0.353, 0.354, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 0, 0)
+layers = 3
 light_color = Color(1, 0.937, 0.855, 1)
 light_energy = 1.2
 shadow_enabled = true
 
-[node name="AmbientFill" type="DirectionalLight3D" parent="." unique_id=1460482197]
+[node name="AmbientFill" type="DirectionalLight3D" parent="." unique_id=1518878955]
 transform = Transform3D(-0.866, -0.353, -0.354, 0, 0.707, -0.707, 0.5, -0.612, 0.612, 0, 0, 0)
 light_color = Color(0.529, 0.682, 0.878, 1)
 light_energy = 0.3
 
-[node name="CityCrafter" type="Node3D" parent="." unique_id=111111111]
+[node name="Ground" type="StaticBody3D" parent="." unique_id=1168137237]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1000, -0.5, 1000)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground" unique_id=1709782949]
+shape = SubResource("BoxShape3D_ground")
+
+[node name="CityCrafter" type="Node3D" parent="." unique_id=932579980]
 script = ExtResource("1_cc")
 city_configuration = ExtResource("2_cfg")
 
-[node name="Player" parent="." unique_id=222222222 instance=ExtResource("3_player")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 900, 2, 900)
+[node name="Player" parent="." unique_id=1830142172 instance=ExtResource("3_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 2, 50)
 
-[node name="StreetProps" type="Node3D" parent="." unique_id=608897926]
+[node name="HUD" type="CanvasLayer" parent="." unique_id=1758773620]
 
-[node name="Vehicles" type="Node3D" parent="." unique_id=67954301]
+[node name="Control" parent="HUD" unique_id=195438114 instance=ExtResource("6_hud")]
+
+[node name="StreetProps" type="Node3D" parent="." unique_id=1348032341]
+
+[node name="Vehicles" type="Node3D" parent="." unique_id=2137222027]
+
+[node name="Enemies" type="Node3D" parent="." unique_id=83723937]
