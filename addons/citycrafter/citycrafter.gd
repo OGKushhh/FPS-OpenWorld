@@ -773,7 +773,6 @@ func spawn_procedural_building(world_pos: Vector3, width: float, depth: float, h
 	building.name = "ProceduralBuilding_%dfl" % floors
 	
 	var wall_mat = cfg.procedural_wall_material
-	var window_mat = cfg.procedural_window_material
 	var roof_mat = cfg.procedural_roof_material
 	
 	var wall_mesh = BoxMesh.new()
@@ -785,41 +784,6 @@ func spawn_procedural_building(world_pos: Vector3, width: float, depth: float, h
 	wall.mesh = wall_mesh
 	wall.position = Vector3(0, height / 2, 0)
 	building.add_child(wall)
-	
-	if window_mat and floors > 1:
-		var win_w = min(1.5, width * 0.15)
-		var win_h = min(1.2, cfg.floor_height * 0.5)
-		var win_gap_x = width / (max(1, int(width / 3)))
-		var win_gap_z = depth / (max(1, int(depth / 3)))
-		
-		for floor in range(max(1, floors - 1)):
-			var fy = (floor + 0.3) * cfg.floor_height + win_h / 2
-			for wx in range(int(width / 2.5)):
-				var wx_pos = -width / 2 + 2 + wx * win_gap_x
-				if wx_pos + win_w > width / 2 - 1:
-					continue
-				for side in [-1, 1]:
-					var win = MeshInstance3D.new()
-					var win_plane = PlaneMesh.new()
-					win_plane.size = Vector2(win_w, win_h)
-					win.mesh = win_plane
-					win.material_override = window_mat
-					win.position = Vector3(wx_pos, fy, side * (depth / 2 + 0.01))
-					building.add_child(win)
-			
-			for wz in range(int(depth / 2.5)):
-				var wz_pos = -depth / 2 + 2 + wz * win_gap_z
-				if wz_pos + win_w > depth / 2 - 1:
-					continue
-				for side in [-1, 1]:
-					var win = MeshInstance3D.new()
-					var win_plane = PlaneMesh.new()
-					win_plane.size = Vector2(win_w, win_h)
-					win.mesh = win_plane
-					win.material_override = window_mat
-					win.position = Vector3(side * (width / 2 + 0.01), fy, wz_pos)
-					win.rotation.y = PI / 2
-					building.add_child(win)
 	
 	var roof = MeshInstance3D.new()
 	var roof_mesh = BoxMesh.new()
@@ -925,12 +889,11 @@ func generate_subdivided_block_async(grid_x: int, grid_z: int, available_buildin
 					var bldg_w = randf_range(6, 14)
 					var bldg_d = randf_range(6, 14)
 					building_node = spawn_procedural_building(world_pos, bldg_w, bldg_d, bldg_h, floors, "residential")
+					if cfg.generate_collision:
+						add_collision_to_building(building_node, bldg_w, bldg_d, bldg_h)
 				
 				add_child(building_node)
 				building_node.owner = get_tree().edited_scene_root
-				
-				if cfg.generate_collision:
-					add_collision_to_building(building_node, 12, 12, bldg_h)
 			
 			processed_subdivisions += 1
 			if processed_subdivisions % 4 == 0:
@@ -1105,6 +1068,10 @@ func spawn_building_at_position(world_pos: Vector3, available_buildings: Array[P
 	building.owner = get_tree().edited_scene_root
 
 func create_intersection_plane(center: Vector3, size: Vector2):
+	var body = StaticBody3D.new()
+	body.name = "Intersection"
+	body.position = center
+
 	var mesh_instance = MeshInstance3D.new()
 	var plane_mesh = PlaneMesh.new()
 	plane_mesh.size = size
@@ -1113,12 +1080,24 @@ func create_intersection_plane(center: Vector3, size: Vector2):
 		mesh_instance.material_override = city_configuration.intersection_material
 	elif city_configuration.road_material:
 		mesh_instance.material_override = city_configuration.road_material
-	mesh_instance.position = center
-	mesh_instance.name = "Intersection"
-	add_child(mesh_instance)
+
+	var collision = CollisionShape3D.new()
+	var shape = BoxShape3D.new()
+	shape.size = Vector3(size.x, 0.1, size.y)
+	collision.shape = shape
+
+	body.add_child(mesh_instance)
+	body.add_child(collision)
+	add_child(body)
+	body.owner = get_tree().edited_scene_root
 	mesh_instance.owner = get_tree().edited_scene_root
+	collision.owner = get_tree().edited_scene_root
 
 func create_road_plane(center: Vector3, size: Vector2, road_type: String):
+	var body = StaticBody3D.new()
+	body.name = road_type
+	body.position = center
+
 	var mesh_instance = MeshInstance3D.new()
 	var plane_mesh = PlaneMesh.new()
 	plane_mesh.size = size
@@ -1129,12 +1108,24 @@ func create_road_plane(center: Vector3, size: Vector2, road_type: String):
 		mesh_instance.material_override = city_configuration.avenue_material
 	elif city_configuration.road_material:
 		mesh_instance.material_override = city_configuration.road_material
-	mesh_instance.position = center
-	mesh_instance.name = road_type
-	add_child(mesh_instance)
+
+	var collision = CollisionShape3D.new()
+	var shape = BoxShape3D.new()
+	shape.size = Vector3(size.x, 0.1, size.y)
+	collision.shape = shape
+
+	body.add_child(mesh_instance)
+	body.add_child(collision)
+	add_child(body)
+	body.owner = get_tree().edited_scene_root
 	mesh_instance.owner = get_tree().edited_scene_root
+	collision.owner = get_tree().edited_scene_root
 
 func create_ground_plane(center: Vector3, size: Vector2, district_type: String = ""):
+	var body = StaticBody3D.new()
+	body.name = "Ground_" + district_type if district_type != "" else "Ground"
+	body.position = center
+
 	var mesh_instance = MeshInstance3D.new()
 	var plane_mesh = PlaneMesh.new()
 	plane_mesh.size = size
@@ -1153,10 +1144,18 @@ func create_ground_plane(center: Vector3, size: Vector2, district_type: String =
 		material_to_use = city_configuration.ground_material
 	if material_to_use:
 		mesh_instance.material_override = material_to_use
-	mesh_instance.position = center
-	mesh_instance.name = "Ground_" + district_type if district_type != "" else "Ground"
-	add_child(mesh_instance)
+
+	var collision = CollisionShape3D.new()
+	var shape = BoxShape3D.new()
+	shape.size = Vector3(size.x, 0.1, size.y)
+	collision.shape = shape
+
+	body.add_child(mesh_instance)
+	body.add_child(collision)
+	add_child(body)
+	body.owner = get_tree().edited_scene_root
 	mesh_instance.owner = get_tree().edited_scene_root
+	collision.owner = get_tree().edited_scene_root
 
 func generate_navigation_async():
 	emit_progress(90, 100, "Generating navigation mesh...")
