@@ -319,20 +319,55 @@ if not (biome == "commercial" and distance_to_road < 50):
 
 ---
 
-### Task 11: Zone System for Detailing (Chunked Generation)
-- **Effort:** Very High
+### Task 11: Occlusion Culling
+- **Effort:** Low-Medium
 - **Priority:** High
 - **Status:** Not Started
 
-**Why it's hardest:** This is a fundamental architectural change. Currently, CityCrafter generates the entire city in one pass in the editor. Moving to a chunked runtime system means:
-- The generator must be decoupled from the editor (`@tool` → runtime)
-- Generation must be fast enough to run during gameplay
-- Chunk boundaries must be seamless (roads, districts, buildings spanning chunks)
-- Loading order matters (terrain → roads → districts → buildings → props)
-- Unloading must clean up without memory leaks
-- The existing `world_stream.gd` (4×4 grid, 500m chunks) provides a starting framework but needs deep integration with CityCrafter's generation pipeline
+**Why it matters for a single-map game:** For a fixed map, you don't need chunked streaming — you need rendering efficiency. Occlusion culling is the single biggest performance win for a dense city. Buildings behind other buildings simply don't render. No code, no architecture changes — Godot 4 has this built-in, it just needs to be enabled and baked.
 
 **What to do:**
+- Enable occlusion culling in Project Settings → Rendering → Occlusion Culling → Use Occlusion Culling = `true`
+- Add an `OccluderInstance3D` node to the city root scene (`world/porto_seco.tscn`)
+- In the editor, select the `OccluderInstance3D` and click **Bake** — this creates a voxel-based occlusion map of the entire city
+- Adjust `bake_resolution` (start with 256, increase if artifacts) — higher = more accurate but more memory
+- Test: walk through the city and verify that buildings behind the current view are culled (use the Debug → Visible Collision Shapes or Frame Profiler to confirm)
+- Combine with LOD (Task 4) for maximum performance:
+  - Near: Full detail, occluded by occlusion culling
+  - Mid: LOD1, occluded by occlusion culling
+  - Far: LOD2, always visible but cheap
+- Optional: Add `OccluderInstance3D` nodes inside individual building scenes for per-building interior occlusion (prevents rendering rooms behind walls)
+- Verify navmesh still works after occlusion bake (should be unaffected)
+
+**How it works:**
+- Godot divides the scene into voxels and pre-computes which cells are visible from which other cells
+- At runtime, the camera position is matched to a voxel cell, and only objects in visible cells are sent to the GPU
+- This eliminates entire blocks of buildings from rendering when the player is on the opposite side of the city
+- For Porto Seco (1800×1800m), this can reduce draw calls by 60-80% depending on viewpoint
+
+**Files to modify:**
+- `world/porto_seco.tscn` — add OccluderInstance3D node
+- `project.godot` — enable occlusion culling setting
+- Optionally: individual building scenes for interior occluders
+
+**Dependencies:** None — can be done immediately. Most effective after Task 4 (LOD) is in place since both systems complement each other.
+
+---
+
+### Task 12: Runtime Chunked Generation (If Going Procedural)
+- **Effort:** Very High
+- **Priority:** Future / On Hold
+- **Status:** Not Started — Only needed if the game switches from a single fixed map to procedural seed-based generation
+
+**When this becomes relevant:** This task is for a future scenario where the game becomes a procedural, seed-based open world (like No Man's Sky or Minecraft) rather than a single designed map. If that never happens, this task stays on hold permanently. If the dev decides to go procedural, this becomes the architectural capstone.
+
+**What changes when going procedural:**
+- CityCrafter currently runs as a `@tool` in the editor — generate once, save the scene, ship it
+- A procedural game needs CityCrafter to run at runtime, generating chunks on demand as the player explores
+- The city is no longer a fixed scene file — it's generated from a seed, meaning the same seed always produces the same city
+- Players can share seeds, and the world is effectively infinite (or very large)
+
+**What to do (if activated):**
 - Refactor `citycrafter.gd` to support partial generation:
   - `generate_chunk(chunk_coords: Vector2i)` — generate a single chunk
   - Chunks share context (district assignments, road network) but generate independently
@@ -350,11 +385,13 @@ if not (biome == "commercial" and distance_to_road < 50):
 - Add chunk priority: chunks closer to the player generate first
 - Handle chunk seams: buildings and roads at chunk edges must align with neighbors
 - Persist generated chunks to disk (optional) to avoid regenerating on re-entry
+- Seed-based determinism: all random calls must use a seeded `RandomNumberGenerator` derived from the world seed + chunk coordinates
+- The existing `world_stream.gd` (4×4 grid, 500m chunks) provides a starting framework but needs deep integration with CityCrafter's generation pipeline
 
-**Files to modify:**
-- `addons/citycrafter/citycrafter.gd` — major refactor for partial generation
+**Files to modify (if activated):**
+- `addons/citycrafter/citycrafter.gd` — major refactor for partial generation + seed determinism
 - `autoloads/world_stream.gd` — integrate with CityCrafter chunk generation
-- `addons/citycrafter/city_configuration.gd` — chunk size, generation params
+- `addons/citycrafter/city_configuration.gd` — chunk size, generation params, seed
 - New: `addons/citycrafter/city_chunk.gd` — chunk resource class
 - New: `addons/citycrafter/chunk_manager.gd` — chunk lifecycle management
 
@@ -375,7 +412,8 @@ Task 7 (Voronoi) ────────────── enables Task 8, 9
 Task 8 (Heightmap) ──────────── benefits from Task 7
 Task 9 (District Rules) ─────── depends on Task 7
 Task 10 (Location Filters) ──── depends on Task 9
-Task 11 (Chunked Gen) ──────── depends on Tasks 7, 8, 9, 10
+Task 11 (Occlusion Culling) ──── standalone, best after Task 4
+Task 12 (Chunked Gen) ──────── ON HOLD — only if going procedural
 ```
 
 ## Recommended Execution Order
@@ -383,11 +421,11 @@ Task 11 (Chunked Gen) ──────── depends on Tasks 7, 8, 9, 10
 | Phase | Tasks | Rationale |
 |-------|-------|-----------|
 | **Phase 1 — Quick Wins** | 1, 2 | Trivial effort, immediate visual improvement |
-| **Phase 2 — Performance** | 4, 5, 3 | LOD is critical; MultiMesh should be ready before adding props |
+| **Phase 2 — Performance** | 4, 11, 5, 3 | LOD + Occlusion Culling are the critical FPS pair; MultiMesh before adding props |
 | **Phase 3 — World Quality** | 6, 7 | Green spaces and Voronoi districts dramatically improve believability |
 | **Phase 4 — Terrain & Rules** | 8, 9 | Heightmap terrain and district rules are foundational for the final city |
 | **Phase 5 — Intelligence** | 10 | Smart placement builds on everything above |
-| **Phase 6 — Architecture** | 11 | Chunked generation is the capstone — requires all previous systems to be stable |
+| **Phase 6 — If Procedural** | 12 | Only if the game switches to seed-based procedural generation |
 
 ---
 
